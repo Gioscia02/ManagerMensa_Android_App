@@ -2,15 +2,14 @@
 <resources>
 
     <style name="CustomTheme" parent="Theme.AppCompat.Light.NoActionBar">
-         Personalizza qui le proprietà del tuo tema
 
-        <!-- Modifica il colore primario -->
+        <!-- colore primario -->
         <item name="colorPrimary">@color/green</item>
-        <!-- Modifica il colore primario scuro -->
+        <!-- colore primario scuro -->
         <item name="colorPrimaryDark">@color/green</item>
-        <!-- Modifica il colore di sfondo -->
+        <!-- colore di sfondo -->
         <item name="android:windowBackground">#FFFFFF</item>
-        <!-- Modifica il colore dell'accento -->
+        <!-- colore dell'accento -->
         <item name="colorAccent">#FF4081</item>
 
 

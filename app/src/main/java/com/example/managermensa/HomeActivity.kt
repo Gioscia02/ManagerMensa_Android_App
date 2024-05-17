@@ -50,6 +50,12 @@ class HomeActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.buttonSegnalazioni.setOnClickListener(){
+
+            val intent = Intent(this, SegnalazioniActivity::class.java)
+            startActivity(intent)
+        }
+
 
 
 
