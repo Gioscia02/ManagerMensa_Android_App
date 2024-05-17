@@ -9,22 +9,19 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-
+import com.example.managermensa.databinding.ActivityAccessoBinding
+import com.example.managermensa.databinding.ActivityAccountBinding
 
 
 class AccessoActivity : AppCompatActivity() {
 
-
+    private lateinit var binding: ActivityAccessoBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //Cambio colore status bar android
-        val window = this.window
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        window.statusBarColor = this.resources.getColor(R.color.green)
-
+        binding = ActivityAccessoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         enableEdgeToEdge()
         setContentView(R.layout.activity_accesso)
@@ -34,13 +31,8 @@ class AccessoActivity : AppCompatActivity() {
             insets
         }
 
-
-
-
-
         // Create an Intent to specify the target activity
         val intent = Intent(this, HomeActivity::class.java)
-
 
 // Start the target activity using startActivity()
         startActivity(intent)

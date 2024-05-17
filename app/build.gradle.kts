@@ -48,11 +48,13 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.play.services.maps)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     val fragment_version = "1.7.1"
     implementation("androidx.fragment:fragment-ktx:$fragment_version")
-//    implementation ("com.android.support:design:27.0.0")
+    implementation ("com.google.android.gms:play-services-maps:17.0.1")
+
 
 }

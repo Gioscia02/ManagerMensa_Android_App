@@ -12,6 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/CustomTheme"
         tools:targetApi="31">
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="your API key"/>
+        <activity
+            android:name=".InfomensaActivity"
+            android:exported="false" />
         <activity
             android:name=".HomeActivity"
             android:exported="false" />
