@@ -54,7 +54,9 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     val fragment_version = "1.7.1"
     implementation("androidx.fragment:fragment-ktx:$fragment_version")
-    implementation ("com.google.android.gms:play-services-maps:17.0.1")
+    implementation ("com.google.android.gms:play-services-maps:18.0.2")
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
+
 
 
 }

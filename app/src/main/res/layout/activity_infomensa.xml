@@ -26,7 +26,7 @@
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_infomensa"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="100dp"
         android:layout_marginBottom="50dp">
 
         <LinearLayout
@@ -48,11 +48,12 @@
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-                <com.google.android.gms.maps.MapView
-                    android:id="@+id/mapView"
+                <fragment
+                    android:id="@+id/map"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="250dp"
-                    android:layout_marginTop="20dp" />
+                    android:layout_height="300dp"
+                    android:layout_marginTop="20dp"/>
 
 
             </LinearLayout>

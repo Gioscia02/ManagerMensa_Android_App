@@ -18,7 +18,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="your API key" />
+            android:value="AIzaSyAt0fRvRTvChLB3Ya6bQ0BHCPVVFuYxVvY" />
 
         <activity
             android:name=".InfomensaActivity"
