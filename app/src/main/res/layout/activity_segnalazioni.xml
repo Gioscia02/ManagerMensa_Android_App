@@ -26,7 +26,8 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="80dp">
+        android:layout_marginTop="80dp"
+        android:padding="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,59 +40,69 @@
                 android:layout_height="wrap_content"
                 android:text="Seleziona l'argomento della tua segnalazione"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
+
+
 
             <RadioGroup
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
                 >
 
                 <RadioButton
-                    android:id="@+id/radioButton5"
+                    android:id="@+id/radioButtonStruttura"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="RadioButton" />
+                    android:text="Struttura" />
 
                 <RadioButton
-                    android:id="@+id/radioButton6"
+                    android:id="@+id/radioButtonCucina"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="RadioButton" />
+                    android:text="Cucina" />
 
                 <RadioButton
-                    android:id="@+id/radioButton7"
+                    android:id="@+id/radioButtonServizio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="RadioButton" />
+                    android:text="Servizio" />
+
+                <RadioButton
+                    android:id="@+id/radioButtonManagerMensa"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ManagerMensa" />
+
             </RadioGroup>
 
-            <RadioGroup
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_marginTop="50dp">
 
-                <RadioButton
-                    android:id="@+id/radioButton"
-                    android:layout_width="wrap_content"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="RadioButton" />
+                    android:hint="Scrivi la segnalazione" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                <RadioButton
-                    android:id="@+id/radioButton2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="RadioButton" />
+            <Button
+                android:id="@+id/invia_segnalazione"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/button"
+                android:fontFamily="sans-serif"
+                android:text="Invia"
+                android:textAllCaps="false"
+                android:textColor="@color/green"
+                android:textSize="16dp"
+                app:backgroundTint="@null"
+                android:layout_marginTop="20dp"/>
 
-                <RadioButton
-                    android:id="@+id/radioButton3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="RadioButton" />
 
-            </RadioGroup>
         </LinearLayout>
     </ScrollView>
 

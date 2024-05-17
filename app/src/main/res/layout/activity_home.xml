@@ -73,8 +73,7 @@
                     android:textAllCaps="false"
                     android:textColor="@color/black"
                     android:textSize="16dp"
-                    app:backgroundTint="@null"
-                    app:rippleColor="#C61616" />
+                    app:backgroundTint="@null" />
 
                 <Button
                     android:id="@+id/button_acquista"
@@ -138,6 +137,46 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
+
+
+                <Button
+                    android:id="@+id/button_segnalazioni"
+                    android:layout_width="171dp"
+                    android:layout_height="125dp"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button"
+                    android:fontFamily="sans-serif"
+                    android:radius="2dp"
+                    android:text="Segnalazioni/Lamentele"
+                    android:textAllCaps="false"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"
+                    app:backgroundTint="@null"
+                    app:rippleColor="#C61616" />
+
+                <Button
+                    android:id="@+id/button_comunicazioni"
+                    android:layout_width="171dp"
+                    android:layout_height="125dp"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button"
+                    android:fontFamily="sans-serif"
+                    android:radius="2dp"
+                    android:text="Avvisi"
+                    android:textAllCaps="false"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"
+                    app:backgroundTint="@null"
+                    app:rippleColor="#C61616" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
                 <Button
                     android:id="@+id/button_info_mensa"
                     android:layout_width="171dp"
@@ -154,44 +193,6 @@
                     app:backgroundTint="@null"
                     app:rippleColor="#C61616" />
 
-                <Button
-                    android:id="@+id/button_comunicazioni"
-                    android:layout_width="171dp"
-                    android:layout_height="125dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/button"
-                    android:fontFamily="sans-serif"
-                    android:radius="2dp"
-                    android:text="Comunicazioni"
-                    android:textAllCaps="false"
-                    android:textColor="@color/black"
-                    android:textSize="16dp"
-                    app:backgroundTint="@null"
-                    app:rippleColor="#C61616" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-
-                <Button
-                    android:id="@+id/button_segnalazioni"
-                    android:layout_width="171dp"
-                    android:layout_height="125dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/button"
-                    android:fontFamily="sans-serif"
-                    android:radius="2dp"
-                    android:text="Segnalazioni"
-                    android:textAllCaps="false"
-                    android:textColor="@color/black"
-                    android:textSize="16dp"
-                    app:backgroundTint="@null"
-                    app:rippleColor="#C61616" />
 
                 <Button
                     android:layout_width="171dp"

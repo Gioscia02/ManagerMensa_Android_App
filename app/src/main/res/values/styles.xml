@@ -10,7 +10,7 @@
         <!-- colore di sfondo -->
         <item name="android:windowBackground">#FFFFFF</item>
         <!-- colore dell'accento -->
-        <item name="colorAccent">#FF4081</item>
+        <item name="colorAccent">#000039 </item>
 
 
     </style>
