@@ -12,6 +12,9 @@
         <!-- colore dell'accento -->
         <item name="colorAccent">#000039 </item>
 
+        <item name="android:statusBarColor">@color/white</item>
+        <!-- colore del testo della barra delle notifiche -->
+        <item name="android:windowLightStatusBar">true</item>
 
     </style>
 

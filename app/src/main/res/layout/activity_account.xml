@@ -28,7 +28,8 @@
         android:layout_height="match_parent"
         android:layout_marginTop="80dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_account">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_account"
+        android:padding="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -81,13 +82,13 @@
                         android:src="@drawable/modifica_credenziali_icon" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="78dp"
                         android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:gravity="center_vertical"
                         android:text="Modifica credenziali"
                         android:textColor="@color/black"
-                        android:textSize="16dp"
-                        android:fontFamily="sans-serif"
-                        android:gravity="center_vertical"/>
+                        android:textSize="16dp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -112,13 +113,13 @@
                         android:src="@drawable/cambia_immagine_profilo_icon" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="96dp"
                         android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:gravity="center_vertical"
                         android:text="Cambia immagine di profilo"
                         android:textColor="@color/black"
-                        android:textSize="16dp"
-                        android:fontFamily="sans-serif"
-                        android:gravity="center_vertical"/>
+                        android:textSize="16dp" />
                 </LinearLayout>
 
                 <LinearLayout
