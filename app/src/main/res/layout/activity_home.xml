@@ -17,7 +17,7 @@
         android:layout_marginBottom="64dp"
         android:src="@drawable/account_40"
         app:tint="@color/green"
-        android:background="@color/white_button"
+        android:background="@color/white"
         android:scaleType="centerInside"
         app:shapeAppearanceOverlay="@style/CustomShape"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -39,6 +39,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:title="@string/app_name"
         app:titleTextColor="@color/green"
+        app:logo="@drawable/app_icon"
+        app:titleMarginStart="26dp"
 
         />
 
@@ -169,12 +171,12 @@
                         android:id="@+id/icon_allergie_intolleranze"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/allergie_e_intolleranze_icon"
+                        android:src="@drawable/allergie_icon_2"
                         android:layout_marginEnd="4dp"/>
 
                     <TextView
                         android:id="@+id/text_allergie_intolleranze"
-                        android:layout_width="78dp"
+                        android:layout_width="95dp"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:text="Allergie e intolleranze"

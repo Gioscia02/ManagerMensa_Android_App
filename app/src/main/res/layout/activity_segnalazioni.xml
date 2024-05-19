@@ -21,18 +21,22 @@
         app:title="Segnalazioni e lamentele"
         app:titleTextColor="@color/green"
         app:navigationIcon="@drawable/arrow"
+        app:logo="@drawable/segnalazioni_e_lamentele_icon"
+        app:titleMarginStart="26dp"
         />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="80dp"
-        android:padding="10dp">
+        android:padding="20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:background="@drawable/button"
+            android:padding="20dp">
 
             <TextView
                 android:id="@+id/textView4"
@@ -40,7 +44,8 @@
                 android:layout_height="wrap_content"
                 android:text="Seleziona l'argomento della tua segnalazione"
                 android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
 
 
 
@@ -82,7 +87,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Scrivi la segnalazione"
-                android:text="" />
+                android:text=""
+                android:layout_marginTop="30dp"/>
 
             <Button
                 android:id="@+id/invia_segnalazione"

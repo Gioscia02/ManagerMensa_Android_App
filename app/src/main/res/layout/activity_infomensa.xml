@@ -19,20 +19,25 @@
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/arrow"
         app:title="Info mensa"
-        app:titleTextColor="@color/green" />
+        app:titleTextColor="@color/green"
+        app:logo="@drawable/info_icon"
+        app:titleMarginStart="26dp"/>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_infomensa"
-        android:layout_marginTop="100dp"
-        android:layout_marginBottom="50dp">
+        android:layout_marginTop="80dp"
+        android:layout_marginBottom="50dp"
+        android:padding="20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@drawable/button"
+            android:padding="20dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -46,7 +51,8 @@
                     android:layout_marginStart="10dp"
                     android:text="Posizione"
                     android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="@color/black"/>
 
                 <fragment
                     android:id="@+id/map"
@@ -72,7 +78,8 @@
                     android:layout_marginStart="10dp"
                     android:text="Orari di apertura:"
                     android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="@color/black"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
