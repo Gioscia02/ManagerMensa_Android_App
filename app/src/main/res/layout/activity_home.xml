@@ -5,8 +5,9 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity"
+    tools:context=".activity.HomeActivity"
     android:fitsSystemWindows="true">
+
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/account_button"
@@ -216,7 +217,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/button_comunicazioni"
+                    android:id="@+id/button_avvisi"
                     android:layout_width="171dp"
                     android:layout_height="125dp"
                     android:layout_margin="10dp"

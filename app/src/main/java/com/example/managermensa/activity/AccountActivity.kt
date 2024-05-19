@@ -1,7 +1,6 @@
-package com.example.managermensa
+package com.example.managermensa.activity
 
 import android.os.Bundle
-import android.view.MenuItem
 
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -9,9 +8,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 
-import androidx.appcompat.widget.Toolbar
+import com.example.managermensa.R
 import com.example.managermensa.databinding.ActivityAccountBinding
-import com.example.managermensa.databinding.ActivityHomeBinding
 
 
 class AccountActivity : AppCompatActivity() {
@@ -27,11 +25,11 @@ class AccountActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        //Collego la toolbar
-        val toolbar = binding.toolbarAccount // Sostituisci R.id.toolbar con l'ID effettivo della tua toolbar
+        //prendo il riferimento alla toolbar
+        val toolbar = binding.toolbarAccount
         setSupportActionBar(toolbar)
 
-        //Controlla quando il pulsante back <- viene cliccato
+        //Controlla quando il pulsante "<-" viene cliccato
         toolbar.setNavigationOnClickListener {
 
         onBackPressed()

@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SegnalazioniActivity"
+    tools:context=".activity.SegnalazioniActivity"
     android:fitsSystemWindows="true">
 
 
@@ -53,40 +53,36 @@
                 <RadioButton
                     android:id="@+id/radioButtonStruttura"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="43dp"
                     android:text="Struttura" />
 
                 <RadioButton
                     android:id="@+id/radioButtonCucina"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="43dp"
                     android:text="Cucina" />
 
                 <RadioButton
                     android:id="@+id/radioButtonServizio"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="43dp"
                     android:text="Servizio" />
 
                 <RadioButton
                     android:id="@+id/radioButtonManagerMensa"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="43dp"
                     android:text="ManagerMensa" />
 
             </RadioGroup>
 
 
-            <com.google.android.material.textfield.TextInputLayout
+            <EditText
+                android:id="@+id/editTextSegnalazione"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="50dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Scrivi la segnalazione" />
-            </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="wrap_content"
+                android:hint="Scrivi la segnalazione"
+                android:text="" />
 
             <Button
                 android:id="@+id/invia_segnalazione"

@@ -13,7 +13,13 @@
         android:theme="@style/CustomTheme"
         tools:targetApi="31">
         <activity
-            android:name=".SegnalazioniActivity"
+            android:name=".activity.PrenotazioniActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AvvisiActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.SegnalazioniActivity"
             android:exported="false" />
 
         <meta-data
@@ -21,16 +27,16 @@
             android:value="AIzaSyAt0fRvRTvChLB3Ya6bQ0BHCPVVFuYxVvY" />
 
         <activity
-            android:name=".InfomensaActivity"
+            android:name=".activity.InfomensaActivity"
             android:exported="false" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".activity.HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".AccountActivity"
+            android:name=".activity.AccountActivity"
             android:exported="false" />
         <activity
-            android:name=".AccessoActivity"
+            android:name=".activity.AccessoActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

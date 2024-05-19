@@ -1,23 +1,28 @@
-package com.example.managermensa
+package com.example.managermensa.activity
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.managermensa.R
 import com.example.managermensa.databinding.ActivitySegnalazioniBinding
 
 class SegnalazioniActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivitySegnalazioniBinding
+    private lateinit var binding: ActivitySegnalazioniBinding
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+//        binding = DataBindingUtil.setContentView(this, R.layout.activity_segnalazioni)
 
         binding = ActivitySegnalazioniBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
-        super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
 
+        //Attivazione della Toolbar
         setSupportActionBar(binding.toolbarSegnalazioni)
 
         //Controlla quando il pulsante back <- viene cliccato
@@ -25,6 +30,7 @@ class SegnalazioniActivity : AppCompatActivity() {
 
             onBackPressed()
         }
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())

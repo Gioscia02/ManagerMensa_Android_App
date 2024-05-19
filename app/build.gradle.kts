@@ -7,6 +7,7 @@ android {
     namespace = "com.example.managermensa"
     compileSdk = 34
 
+
     defaultConfig {
         applicationId = "com.example.managermensa"
         minSdk = 30
@@ -57,6 +58,10 @@ dependencies {
     implementation ("com.google.android.gms:play-services-maps:18.0.2")
     implementation ("com.google.android.gms:play-services-location:21.0.1")
     implementation ("com.google.android.material:material:1.4.0")
+
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
+    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.4.1")
+    implementation ("androidx.databinding:databinding-runtime:7.0.4")
 
 
 
