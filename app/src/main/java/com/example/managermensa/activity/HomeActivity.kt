@@ -84,7 +84,22 @@ class HomeActivity : AppCompatActivity() {
         }
 
 
-        //Controllo click sull'Avvisi Button
+        //Controllo click sull'ultimo Avviso
+        binding.avvisiTopbar.setOnClickListener(){
+
+            //Caricamento animazione al click del Button
+//            val scaleAnimation = AnimationUtils.loadAnimation(this.binding.buttonAvvisi.context,
+//                R.anim.button_scale
+//            )
+//            binding.buttonAvvisi.startAnimation(scaleAnimation)
+
+            //Cambio Activity
+            val intent = Intent(this, AvvisiActivity::class.java)
+            startActivity(intent)
+        }
+
+
+        //Controllo click sul Button prenotazioni
         binding.buttonPrenotazioni.setOnClickListener(){
 
             //Caricamento animazione al click del Button

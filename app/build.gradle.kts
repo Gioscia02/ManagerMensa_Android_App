@@ -63,6 +63,9 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.4.1")
     implementation ("androidx.databinding:databinding-runtime:7.0.4")
 
+    implementation ("com.squareup.okhttp3:okhttp:4.9.0")
+
+
 
 
 }

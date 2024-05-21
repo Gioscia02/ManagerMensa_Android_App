@@ -9,6 +9,56 @@
     android:fitsSystemWindows="true">
 
 
+
+
+
+    <!-- Riquadro avvisi -->
+    <LinearLayout
+        android:id="@+id/avvisi_topbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:padding="16dp"
+        android:background="@drawable/button"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="10dp">
+
+        <TextView
+            android:id="@+id/avvisi_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Titolo dell'Avviso"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/avvisi_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="20 Maggio 2024"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/avvisi_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Descrizione dettagliata dell'avviso. Qui verranno visualizzati gli avvisi importanti."
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif" />
+    </LinearLayout>
+    <!-- Altri componenti come il bottone e il ScrollView restano invariati -->
+
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/account_button"
         android:layout_width="80dp"
@@ -24,37 +74,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:clickable="true"
         android:focusable="true"
-        android:elevation="1dp"
-        />
-
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_alignParentTop="true"
-        android:background="@color/white"
-        android:elevation="4dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:title="@string/app_name"
-        app:titleTextColor="@color/green"
-        app:logo="@drawable/app_icon"
-        app:titleMarginStart="26dp"
-
-        />
-
-
-
+        android:elevation="1dp" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
         android:padding="10dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="140dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+        app:layout_constraintTop_toBottomOf="@+id/avvisi_layout">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -293,7 +322,4 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
