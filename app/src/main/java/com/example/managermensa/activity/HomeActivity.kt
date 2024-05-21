@@ -114,6 +114,23 @@ class HomeActivity : AppCompatActivity() {
         }
 
 
+        binding.buttonAllergieIntolleranze.setOnClickListener{
+
+            //Caricamento animazione al click del Button
+            val scaleAnimation = AnimationUtils.loadAnimation(this.binding.buttonAllergieIntolleranze.context,
+                R.anim.button_scale
+            )
+            binding.buttonAllergieIntolleranze.startAnimation(scaleAnimation)
+
+            //Cambio Activity
+            val intent = Intent(this, AllergieActivity::class.java)
+            startActivity(intent)
+
+
+
+        }
+
+
 
 
         }
