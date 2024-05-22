@@ -147,6 +147,12 @@ class HomeActivity : AppCompatActivity() {
 
         }
 
+    //Per evitare di tornare nella schermata di accesso
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+    }
+
 
 //            ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
 //                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
