@@ -28,11 +28,11 @@ class AccessoActivity : AppCompatActivity() {
             insets
         }
 
-        // Create an Intent to specify the target activity
-        val intent = Intent(this, HomeActivity::class.java)
-
-// Start the target activity using startActivity()
-        startActivity(intent)
-        finish()
+//        // Create an Intent to specify the target activity
+//        val intent = Intent(this, HomeActivity::class.java)
+//
+//// Start the target activity using startActivity()
+//        startActivity(intent)
+//        finish()
     }
 }

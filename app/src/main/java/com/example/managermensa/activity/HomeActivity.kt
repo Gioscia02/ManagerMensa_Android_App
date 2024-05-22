@@ -126,7 +126,19 @@ class HomeActivity : AppCompatActivity() {
             val intent = Intent(this, AllergieActivity::class.java)
             startActivity(intent)
 
+        }
 
+        binding.buttonMenu.setOnClickListener{
+
+            //Caricamento animazione al click del Button
+            val scaleAnimation = AnimationUtils.loadAnimation(this.binding.buttonMenu.context,
+                R.anim.button_scale
+            )
+            binding.buttonMenu.startAnimation(scaleAnimation)
+
+            //Cambio Activity
+            val intent = Intent(this, MenuActivity::class.java)
+            startActivity(intent)
 
         }
 
