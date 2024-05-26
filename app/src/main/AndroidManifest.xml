@@ -18,6 +18,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".activity.b"
+            android:exported="false" />
+
+        <activity
             android:name=".activity.LoginActivity"
             android:exported="false" />
         <activity
