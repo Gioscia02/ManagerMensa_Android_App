@@ -4,6 +4,7 @@ import android.app.TimePickerDialog
 import android.os.Bundle
 import android.provider.ContactsContract.Contacts.Data
 import android.util.Log
+import android.view.animation.AnimationUtils
 import android.widget.TimePicker
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -68,6 +69,13 @@ class PrenotazioniActivity : AppCompatActivity() {
         }
 
         binding.buttonPrenotaPranzo.setOnClickListener {
+
+            //Caricamento animazione al click del Button
+            val scaleAnimation = AnimationUtils.loadAnimation(this.binding.buttonPrenotaPranzo.context,
+                R.anim.button_scale
+            )
+            binding.buttonPrenotaPranzo.startAnimation(scaleAnimation)
+
             val now = LocalTime.now()
 
 
@@ -85,6 +93,13 @@ class PrenotazioniActivity : AppCompatActivity() {
         }
 
         binding.buttonPrenotaCena.setOnClickListener {
+
+            //Caricamento animazione al click del Button
+            val scaleAnimation = AnimationUtils.loadAnimation(this.binding.buttonPrenotaCena.context,
+                R.anim.button_scale
+            )
+            binding.buttonPrenotaCena.startAnimation(scaleAnimation)
+
             val now = LocalTime.now()
             if (now.isAfter(LocalTime.of(0, 0)) ) {
                 if (selectedTimeCena != null) {

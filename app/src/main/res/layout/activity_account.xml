@@ -154,6 +154,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
+                    android:id="@+id/buttonLogout"
                     android:layout_width="match_parent"
                     android:layout_height="125dp"
                     android:layout_margin="10dp"
