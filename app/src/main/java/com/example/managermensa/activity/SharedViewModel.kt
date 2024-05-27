@@ -1,5 +1,6 @@
 package com.example.managermensa.activity
 
+import UserDatabaseManager
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -21,11 +22,7 @@ import com.google.gson.reflect.TypeToken
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.sql.Date
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
 
@@ -68,29 +65,53 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
                     val risposta: JsonObject? = response.body()
                     Log.d("risposta", risposta.toString())
 
+                    //In caso di risposta non nulla
                     if (risposta != null) {
-                        val oggi = java.util.Date()
-                        val sqlDate = Date(oggi.time)
 
+                        //Prendo i singoli dati dell'utente dalla risposta
+                        val nome_ = risposta.get("nome")?.asString ?: ""
+                        val cognome_ = risposta.get("cognome")?.asString ?: ""
+                        val email_ = risposta.get("email")?.asString ?: ""
+                        val nascita_ = risposta.get("nascita")?.asString ?: ""
+                        val password_ = risposta.get("password")?.asString ?: ""
 
-                        showToast(context, "Accesso effettuato")
+                            //Preparo l'utente da inserire
+                            val user = Utente(nome_, cognome_, email_, password_, nascita_)
+                            val dbManager = UserDatabaseManager(context)
 
-                        saveCredentials(context, email, password)
+                            // Inserisco il nuovo utente nel DB locale
+                            val isInserted = dbManager.insertUser(user)
+                            if (isInserted) {
+                                Log.d("DB", "Utente inserito")
+                            } else {
+                                Log.e("DB", "Errore Utente non inserito")
+                            }
 
+                            showToast(context, "Accesso effettuato")
 
-                        val intent = Intent(context, HomeActivity::class.java)
-                        context.startActivity(intent)
+                            //Salvo globalmente le credenziali dell'account loggato in questo momento
+                            saveCredentials(context, email, password)
+
+                            val intent = Intent(context, HomeActivity::class.java)
+                            context.startActivity(intent)
+
                     } else {
-                        showToast(context, "Accesso negato")
+                        showToast(context, "Accesso negato: risposta nulla")
+                        Log.e("getUtente", "Risposta nulla dal server")
                     }
+                } else {
+                    showToast(context, "Accesso negato: risposta non valida")
+                    Log.e("getUtente", "Risposta non valida dal server")
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 Log.e("getUtente", "Failed to get user", t)
+                showToast(context, "Accesso negato: errore di connessione")
             }
         })
     }
+
 
     fun getListaUtenti() {
         Client.retrofit.getUtenti().enqueue(object : Callback<JsonArray> {
@@ -104,51 +125,6 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
 
             override fun onFailure(call: Call<JsonArray>, t: Throwable) {
                 Log.e("getListaUtenti", "Failed to get users list", t)
-            }
-        })
-    }
-
-    fun deleteItem(item: Utente) {
-        Log.v("delete", item.toString())
-        Client.retrofit.deleteUtente(item.idutente).enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful) {
-                    _itemList.value?.apply {
-                        remove(item)
-                        _itemList.postValue(this)
-                    }
-                    _success.value = true
-                } else {
-                    _success.value = false
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                _success.value = false
-            }
-        })
-    }
-
-    fun updateItem(item: Utente, position: Int) {
-        val gson = Gson()
-        Log.d("item", item.toString())
-        val json = gson.toJsonTree(item).asJsonObject
-        Client.retrofit.updateUtente(item.idutente, json).enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful) {
-                    _itemList.value?.apply {
-                        set(position, item)
-                        _itemList.postValue(this)
-                    }
-                    _utenteSelezionato.value = item
-                    _success.value = true
-                } else {
-                    _success.value = false
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                _success.value = false
             }
         })
     }
@@ -169,26 +145,45 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
                     _success.value = true
 
                     if (context != null) {
+                        val dbManager = UserDatabaseManager(context)
+
+                        // Inserire un nuovo utente nel DB locale
+                        val user = Utente(nome, cognome, email, password, nascita)
+                        val isInserted = dbManager.insertUser(user)
+                        if (isInserted) {
+                            Log.d("DB", "User inserted successfully")
+                        } else {
+                            Log.e("DB", "Error inserting user")
+                        }
+
+                        // Recuperare un utente per email
+                        val retrievedUser = dbManager.getUserByEmail(email)
+                        if (retrievedUser != null) {
+                            Log.d("DB", "User found: $retrievedUser")
+                        } else {
+                            Log.e("DB", "User not found")
+                        }
+
+                        // Memorizza l'account loggato localmente
                         saveCredentials(context, email, password)
                         val intent = Intent(context, HomeActivity::class.java)
                         context.startActivity(intent)
                     } else {
                         Log.e("insertItem", "Context is null, cannot save credentials")
                     }
-
-
                 } else {
                     _success.value = false
                     Log.e("insertItem", "Error in insertion")
                 }
             }
+
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 _success.value = false
+                Log.e("insertItem", "Failed to insert item", t)
             }
         })
     }
 
-    //Invio segnalazione
     fun insertSegnalazione(email: String?, binding: ActivitySegnalazioniBinding, argomento: String, testo: String) {
         val gson = Gson()
         val string  =
@@ -199,7 +194,6 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     _success.value = true
-
 
                     // Pulizia campi
                     binding.editTextSegnalazione.text.clear()
@@ -219,10 +213,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
         })
     }
 
-
-    // Inserimento della nuova prenotazione
     fun insertPrenotazione(binding: ActivityPrenotazioniBinding, email: String?) {
-
         val gson = Gson()
         val string  =
             "{\"email\": \"$email\"}"
@@ -234,10 +225,9 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
                 if (response.isSuccessful) {
                     _success.value = true
 
-
                     showToast(binding.root.context, "Prenotazione effettuata")
 
-                    //Pulizia campo
+                    // Pulizia campo
                     binding.selectedTimeTextViewPranzo.text = ""
                     binding.selectedTimeTextViewCena.text = ""
 
@@ -245,13 +235,8 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
                     val currentTime = Calendar.getInstance()
                     val formattedTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(currentTime.time)
 
-                    showToast(binding.root.context, "Prenotazione effettuata")
                     // Imposta l'orario della prenotazione nella TextView
-
                     binding.textPrenotazioniOggi.text = "${binding.textPrenotazioniOggi.text}    ${formattedTime}"
-
-
-
                 } else {
                     _success.value = false
                     Log.e("insertPrenotazione", "Error in insertion")
@@ -265,18 +250,6 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
         })
     }
 
-
-
-//
-//    fun conferma(nome: String, cognome: String, nascita: String, email: String, password: String) {
-//        val idutente = _utenteSelezionato.value?.idutente ?: 0
-//        if (idutente != 0) {
-//            updateItem(Utente(nome, cognome, email, Date.valueOf(nascita), idutente), _position.value!!)
-//        } else {
-//            insertItem(nome, cognome, nascita, email, password)
-//        }
-//    }
-
     fun reset() {
         _position.value = -1
         _utenteSelezionato.value = null
@@ -286,8 +259,8 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun parseJsonToModel(jsonString: JsonArray): ArrayList<Utente> {
+    private fun parseJsonToModel(jsonArray: JsonArray): ArrayList<Utente> {
         val gson = GsonBuilder().setDateFormat("yyyy-MM-dd").create()
-        return gson.fromJson(jsonString, object : TypeToken<ArrayList<Utente>>() {}.type)
+        return gson.fromJson(jsonArray, object : TypeToken<ArrayList<Utente>>() {}.type)
     }
 }
