@@ -17,8 +17,8 @@ interface UserAPI {
     @DELETE("$USER_URI/{id}")
     fun deleteUtente(@Path("id") id: Int): Call<JsonObject>
 
-    @PUT("$USER_URI/{id}")
-    fun updateUtente(@Path("id") id: Int, @Body body: JsonObject): Call<JsonObject>
+    @PUT("$USER_URI/aggiornautente")
+    fun updateUtente( @Body body: JsonObject): Call<JsonObject>
 
     @POST(USER_URI)
     fun insertUtente( @Body body: JsonObject): Call<JsonObject>
@@ -47,7 +47,7 @@ interface UserAPI {
 
 
     companion object {
-        const val BASE_URL = "http://192.168.116.242:9000/"
+        const val BASE_URL = "http://147.163.206.192:9000/"
         const val USER_URI = "pwm/utenti"
 
     }

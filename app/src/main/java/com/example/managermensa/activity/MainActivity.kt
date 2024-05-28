@@ -22,6 +22,18 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val user = SecurePreferencesManager.getUser(this)
+        if (user != null) {
+            // L'utente è già loggato, naviga alla HomeActivity
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+            finish()
+        } else {
+            // L'utente non è loggato, rimani nella MainActivity
+        }
+
+
+
 
         binding.buttonLogin.setOnClickListener{
 

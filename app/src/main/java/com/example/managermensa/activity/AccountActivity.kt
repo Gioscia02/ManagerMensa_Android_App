@@ -12,7 +12,6 @@ import androidx.core.view.WindowInsetsCompat
 
 
 import com.example.managermensa.R
-import com.example.managermensa.SecurePreferencesManager
 import com.example.managermensa.databinding.ActivityAccountBinding
 
 
@@ -40,12 +39,28 @@ class AccountActivity : AppCompatActivity() {
 
         }
 
+        //Button di modifica credenziali
+        binding.buttonModificaCredenziali.setOnClickListener{
+
+            //Caricamento animazione al click del Button
+            val scaleAnimation = AnimationUtils.loadAnimation(this.binding.buttonModificaCredenziali.context,
+                R.anim.button_scale
+            )
+            binding.buttonModificaCredenziali.startAnimation(scaleAnimation)
+
+            //Cambio Activity
+            val intent = Intent(this, ModificaCredenzialiActivity::class.java)
+            startActivity(intent)
+
+        }
+
+
 
         binding.buttonLogout.setOnClickListener{
 
 
             //Cancella le credenziali
-            SecurePreferencesManager.clearCredentials(this)
+            SecurePreferencesManager.clearUser(this)
 
             //Caricamento animazione al click del Button
             val scaleAnimation = AnimationUtils.loadAnimation(this.binding.buttonLogout.context,

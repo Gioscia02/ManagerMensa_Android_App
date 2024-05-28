@@ -1,5 +1,6 @@
 package com.example.managermensa.activity
 
+import SecurePreferencesManager
 import UserDatabaseManager
 import android.app.Application
 import android.content.Context
@@ -9,7 +10,6 @@ import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.managermensa.SecurePreferencesManager.saveCredentials
 import com.example.managermensa.activity.retrofit.Client
 import com.example.managermensa.databinding.ActivityPrenotazioniBinding
 import com.example.managermensa.databinding.ActivityRegistrazioneBinding
@@ -65,35 +65,39 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
                     val risposta: JsonObject? = response.body()
                     Log.d("risposta", risposta.toString())
 
-                    //In caso di risposta non nulla
                     if (risposta != null) {
-
-                        //Prendo i singoli dati dell'utente dalla risposta
                         val nome_ = risposta.get("nome")?.asString ?: ""
                         val cognome_ = risposta.get("cognome")?.asString ?: ""
                         val email_ = risposta.get("email")?.asString ?: ""
                         val nascita_ = risposta.get("nascita")?.asString ?: ""
                         val password_ = risposta.get("password")?.asString ?: ""
 
-                            //Preparo l'utente da inserire
+
                             val user = Utente(nome_, cognome_, email_, password_, nascita_)
                             val dbManager = UserDatabaseManager(context)
 
-                            // Inserisco il nuovo utente nel DB locale
+                            // Inserire un nuovo utente nel DB locale
                             val isInserted = dbManager.insertUser(user)
                             if (isInserted) {
-                                Log.d("DB", "Utente inserito")
+                                Log.d("DB", "User inserted successfully")
                             } else {
-                                Log.e("DB", "Errore Utente non inserito")
+                                Log.e("DB", "Error inserting user")
                             }
 
+
                             showToast(context, "Accesso effettuato")
+                            SecurePreferencesManager.clearUser(context)
+                            SecurePreferencesManager.saveUser(context, user)
 
-                            //Salvo globalmente le credenziali dell'account loggato in questo momento
-                            saveCredentials(context, email, password)
 
+                        // Verifica se l'activity corrente è l'activity di login
+                        if (context is LoginActivity) {
                             val intent = Intent(context, HomeActivity::class.java)
                             context.startActivity(intent)
+                            (context as LoginActivity).finish()
+                        }
+
+
 
                     } else {
                         showToast(context, "Accesso negato: risposta nulla")
@@ -110,7 +114,10 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
                 showToast(context, "Accesso negato: errore di connessione")
             }
         })
+
+
     }
+
 
 
     fun getListaUtenti() {
@@ -125,6 +132,29 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
 
             override fun onFailure(call: Call<JsonArray>, t: Throwable) {
                 Log.e("getListaUtenti", "Failed to get users list", t)
+            }
+        })
+    }
+
+    fun updateUtente(emailattuale: String?,emailnuova: String?,password: String?, nome: String?, cognome: String?,nascita: String? ) {
+        val gson = Gson()
+        val string  =
+            "{\"emailattuale\": \"$emailattuale\", \"emailnuova\": \"$emailnuova\", \"password\": \"$password\", \"nome\": \"$nome\", \"cognome\": \"$cognome\", \"nascita\": \"$nascita\"}"
+
+        val json = gson.fromJson(string, JsonObject::class.java)
+        Client.retrofit.updateUtente(json).enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    _success.value = true
+                } else {
+                    _success.value = false
+                    Log.e("updateUtente", "Errore aggiornamento Utente")
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                _success.value = false
+                Log.e("updateUtente", "Errore aggiornamento Utente", t)
             }
         })
     }
@@ -165,7 +195,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
                         }
 
                         // Memorizza l'account loggato localmente
-                        saveCredentials(context, email, password)
+                        SecurePreferencesManager.saveUser(context, user)
                         val intent = Intent(context, HomeActivity::class.java)
                         context.startActivity(intent)
                     } else {
@@ -213,33 +243,53 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
         })
     }
 
-    fun insertPrenotazione(binding: ActivityPrenotazioniBinding, email: String?) {
+    fun insertPrenotazione(context: Context, binding: ActivityPrenotazioniBinding,orario:String, email: String?) {
         val gson = Gson()
-        val string  =
-            "{\"email\": \"$email\"}"
-
+        val string = "{\"email\": \"$email\"}"
         val json = gson.fromJson(string, JsonObject::class.java)
+
         // Invio della richiesta di inserimento della prenotazione tramite Retrofit
         Client.retrofit.insertPrenotazione(json).enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     _success.value = true
 
-                    showToast(binding.root.context, "Prenotazione effettuata")
+                    if (context != null) {
 
-                    // Pulizia campo
-                    binding.selectedTimeTextViewPranzo.text = ""
-                    binding.selectedTimeTextViewCena.text = ""
+                        val dbManager = UserDatabaseManager(context)
 
-                    // Ottieni l'orario corrente
-                    val currentTime = Calendar.getInstance()
-                    val formattedTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(currentTime.time)
+                        // Ottieni la data e l'orario corrente
+                        val currentTime = Calendar.getInstance()
+                        val formattedDate = SimpleDateFormat(
+                            "yyyy-MM-dd",
+                            Locale.getDefault()
+                        ).format(currentTime.time)
+//                        val formattedTime =
+//                            SimpleDateFormat("HH:mm", Locale.getDefault()).format(currentTime.time)
+                        val dateTime = formattedDate
 
-                    // Imposta l'orario della prenotazione nella TextView
-                    binding.textPrenotazioniOggi.text = "${binding.textPrenotazioniOggi.text}    ${formattedTime}"
-                } else {
-                    _success.value = false
-                    Log.e("insertPrenotazione", "Error in insertion")
+                        Log.d("gtrggrgg", orario)
+                        // Inserisci la prenotazione nel database locale
+                        val isInserted = dbManager.insertPrenotazione(email, orario, dateTime.toString())
+                        if (isInserted) {
+                            Log.d("DB", "Prenotazione inserita correttamente")
+                        } else {
+                            Log.e("DB", "Errore nell'inserimento della prenotazione")
+                        }
+
+                        showToast(binding.root.context, "Prenotazione effettuata")
+
+                        // Pulizia campo
+                        binding.selectedTimeTextViewPranzo.text = ""
+                        binding.selectedTimeTextViewCena.text = ""
+
+                        // Imposta l'orario della prenotazione nella TextView
+                        binding.textPrenotazioniOggi.text =
+                            "${binding.textPrenotazioniOggi.text}    $orario"
+                    } else {
+                        _success.value = false
+                        Log.e("insertPrenotazione", "Error in insertion")
+                    }
                 }
             }
 
@@ -249,6 +299,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
             }
         })
     }
+
 
     fun reset() {
         _position.value = -1

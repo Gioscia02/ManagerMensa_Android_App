@@ -1,5 +1,6 @@
 package com.example.managermensa.activity
 
+import UserDatabaseManager
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.provider.ContactsContract.Contacts.Data
@@ -14,7 +15,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.managermensa.R
-import com.example.managermensa.SecurePreferencesManager
 import com.example.managermensa.activity.retrofit.Client
 import com.example.managermensa.databinding.ActivityPrenotazioniBinding
 import com.google.gson.Gson
@@ -47,6 +47,13 @@ class PrenotazioniActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityPrenotazioniBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val utente = SecurePreferencesManager.getUser(this)
+
+        //Recupero email
+        val email : String? = utente?.email
+        Log.d("aaaaaaaaaaaaaaaaa", utente.toString())
+        val dbManager = UserDatabaseManager(this)
 //        sendReservation()
 
         val toolbar = binding.toolbarPrenotazioni
@@ -59,6 +66,10 @@ class PrenotazioniActivity : AppCompatActivity() {
         toolbar.setNavigationOnClickListener {
             onBackPressed()
         }
+
+
+        binding.textPrenotazioniOggi.text = dbManager.getOrarioByEmail(email)
+
 
         binding.selectTimeButtonPranzo.setOnClickListener {
             showTimePickerDialog(true)
@@ -81,8 +92,10 @@ class PrenotazioniActivity : AppCompatActivity() {
 
             if (now.isAfter(LocalTime.of(0, 0)) ) {
                 if (selectedTimePranzo != null) {
-                    val email = SecurePreferencesManager.getEmail(this)
-                    viewModel.insertPrenotazione(binding, email)
+
+                    //Invio prenotazione
+                    viewModel.insertPrenotazione(this,binding,selectedTimePranzo.toString(), email)
+                    showToast(selectedTimePranzo.toString())
 
                 } else {
                     showToast("Seleziona un orario per il pranzo prima di prenotare")
@@ -104,8 +117,9 @@ class PrenotazioniActivity : AppCompatActivity() {
             if (now.isAfter(LocalTime.of(0, 0)) ) {
                 if (selectedTimeCena != null) {
 
-                    val email = SecurePreferencesManager.getEmail(this)
-                    viewModel.insertPrenotazione(binding, email)
+                    //Invio prenotazione
+                    viewModel.insertPrenotazione(this,binding,selectedTimeCena.toString(), email)
+
                 } else {
                     showToast("Seleziona un orario per la cena prima di prenotare")
                 }

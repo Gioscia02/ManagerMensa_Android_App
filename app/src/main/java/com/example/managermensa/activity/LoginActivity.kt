@@ -54,6 +54,8 @@ class LoginActivity : AppCompatActivity() {
 
         }
 
+
+
         binding.buttonAccedi.setOnClickListener{
 
             if(binding.editTextEmail.text.isEmpty()||binding.editTextPassword.text.isEmpty()){
@@ -66,6 +68,7 @@ class LoginActivity : AppCompatActivity() {
 
                 viewModel.getUtente(this, binding.editTextEmail.text.toString(),
                     binding.editTextPassword.text.toString())
+
 
 
 

@@ -13,7 +13,6 @@ import androidx.core.view.get
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.managermensa.R
-import com.example.managermensa.SecurePreferencesManager
 import com.example.managermensa.activity.retrofit.Client
 import com.example.managermensa.databinding.ActivitySegnalazioniBinding
 import com.google.gson.Gson
@@ -32,9 +31,15 @@ class SegnalazioniActivity : AppCompatActivity() {
    val viewModel : SharedViewModel by viewModels()
 
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        binding = DataBindingUtil.setContentView(this, R.layout.activity_segnalazioni)
+
+        val utente = SecurePreferencesManager.getUser(this)
+
+        //Recupero email
+        val email : String? = utente?.email
 
         binding = ActivitySegnalazioniBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -60,8 +65,6 @@ class SegnalazioniActivity : AppCompatActivity() {
 
                 val selectedRadioButton = findViewById<RadioButton>(id_scelto)
                 val selectedText = selectedRadioButton.text
-
-                val email = SecurePreferencesManager.getEmail(this)
 
 
                 viewModel.insertSegnalazione(email,binding,selectedText.toString(), binding.editTextSegnalazione.text.toString())

@@ -67,6 +67,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/buttonModificaCredenziali"
                     android:layout_width="171dp"
                     android:layout_height="125dp"
                     android:layout_margin="10dp"
