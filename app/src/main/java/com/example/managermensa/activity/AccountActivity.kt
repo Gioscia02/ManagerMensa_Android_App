@@ -39,6 +39,22 @@ class AccountActivity : AppCompatActivity() {
 
         }
 
+
+        //Button del portafoglio
+        binding.buttonPortafoglio.setOnClickListener{
+
+            //Caricamento animazione al click del Button
+            val scaleAnimation = AnimationUtils.loadAnimation(this.binding.buttonPortafoglio.context,
+                R.anim.button_scale
+            )
+            binding.buttonPortafoglio.startAnimation(scaleAnimation)
+
+            //Cambio Activity
+            val intent = Intent(this, PortafoglioActivity::class.java)
+            startActivity(intent)
+
+        }
+
         //Button di modifica credenziali
         binding.buttonModificaCredenziali.setOnClickListener{
 
@@ -55,7 +71,7 @@ class AccountActivity : AppCompatActivity() {
         }
 
 
-
+        //button di Logout
         binding.buttonLogout.setOnClickListener{
 
 

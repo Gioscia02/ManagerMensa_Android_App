@@ -66,6 +66,7 @@ class LoginActivity : AppCompatActivity() {
 
             else {
 
+
                 viewModel.getUtente(this, binding.editTextEmail.text.toString(),
                     binding.editTextPassword.text.toString())
 

@@ -86,7 +86,6 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
 
 
                             showToast(context, "Accesso effettuato")
-                            SecurePreferencesManager.clearUser(context)
                             SecurePreferencesManager.saveUser(context, user)
 
 
