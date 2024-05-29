@@ -11,6 +11,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.managermensa.activity.retrofit.Client
+import com.example.managermensa.databinding.ActivityPortafoglioBinding
 import com.example.managermensa.databinding.ActivityPrenotazioniBinding
 import com.example.managermensa.databinding.ActivityRegistrazioneBinding
 import com.example.managermensa.databinding.ActivitySegnalazioniBinding
@@ -116,6 +117,48 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
 
 
     }
+
+
+    fun getPrezzi(binding: ActivityPortafoglioBinding) {
+        Client.retrofit.getPrezzi().enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val risposta: JsonObject? = response.body()
+                    Log.d("risposta", risposta.toString())
+
+                    if(risposta != null){
+
+                        val prezzo_pranzo_completo = risposta.get("prezzo_pranzo_completo")?.asString ?: ""
+                        val prezzo_cena_completa = risposta.get("prezzo_cena_completa")?.asString ?: ""
+                        val prezzo_primo = risposta.get("prezzo_primo")?.asString ?: ""
+                        val prezzo_secondo = risposta.get("prezzo_secondo")?.asString ?: ""
+                        val prezzo_contorno = risposta.get("prezzo_contorno")?.asString ?: ""
+
+                        binding.textCostoPranzoValore.text = prezzo_pranzo_completo
+                        binding.textCostoCenaValore.text = prezzo_cena_completa
+                        binding.textPrezzoPrimoValore.text = prezzo_primo
+                        binding.textPrezzoSecondoValore.text = prezzo_secondo
+                        binding.textPrezzoContornoValore.text = prezzo_contorno
+
+
+
+
+
+                    }
+
+
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                Log.e("getUtente", "Failed to get user", t)
+
+            }
+        })
+
+
+    }
+
 
 
 

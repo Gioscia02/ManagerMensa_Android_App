@@ -37,6 +37,10 @@ interface UserAPI {
     @GET("$USER_URI/avvisi")
     fun getAvvisi(): Call<JsonArray>
 
+    @GET("$USER_URI/prezzi")
+    fun getPrezzi(): Call<JsonObject>
+
+
 
 
 
@@ -47,7 +51,7 @@ interface UserAPI {
 
 
     companion object {
-        const val BASE_URL = "http://147.163.206.192:9000/"
+        const val BASE_URL = "http://192.168.1.84:9000/"
         const val USER_URI = "pwm/utenti"
 
     }
