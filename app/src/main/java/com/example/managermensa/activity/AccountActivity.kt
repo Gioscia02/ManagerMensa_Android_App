@@ -45,6 +45,8 @@ class AccountActivity : AppCompatActivity() {
         }
 
 
+
+
         //Button del portafoglio
         binding.buttonPortafoglio.setOnClickListener{
 

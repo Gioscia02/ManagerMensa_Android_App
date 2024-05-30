@@ -29,6 +29,11 @@ interface UserAPI {
     @POST("$USER_URI/prenotazione")
     fun insertPrenotazione( @Body body: JsonObject): Call<JsonObject>
 
+    @POST("$USER_URI/transazione")
+    fun insertTransizione( @Body body: JsonObject): Call<JsonObject>
+
+
+
     @GET("$USER_URI/prenotazione")
     fun getPrenotazioni(): Call<JsonArray>
 
@@ -43,6 +48,8 @@ interface UserAPI {
     @GET("$USER_URI/prezzi")
     fun getPrezzi(): Call<JsonObject>
 
+    @GET("$USER_URI/transazioni/{email}")
+    fun getSaldo( @Path("email") email: String?): Call<JsonObject>
 
 
 

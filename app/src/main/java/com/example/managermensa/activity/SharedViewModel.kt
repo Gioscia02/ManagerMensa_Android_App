@@ -46,8 +46,8 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     private val _itemList = MutableLiveData<ArrayList<Utente>>().apply { value = ArrayList() }
     val itemList: LiveData<ArrayList<Utente>> get() = _itemList
 
-    private val _utenteSelezionato = MutableLiveData<Utente?>().apply { value = null }
-    val utenteSelezionato: LiveData<Utente?> get() = _utenteSelezionato
+    private val _utenteSelezionato = MutableLiveData<User?>().apply { value = null }
+    val utenteSelezionato: LiveData<User?> get() = _utenteSelezionato
 
     private val _position = MutableLiveData<Int>().apply { value = -1 }
     val position: LiveData<Int> get() = _position
@@ -88,47 +88,19 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
                         val password_ = risposta.get("password")?.asString ?: ""
 
 
-                        val user = Utente(nome_, cognome_, email_, password_, nascita_)
+                        //Prendo l'utente presente nel DB locale
                         val user_ = User(email_,password_,nome_, cognome_, nascita_)
 
-
-
-                        // Utilizzo le coroutine per eseguire l'operazione del database su un thread di background
-                        viewModelScope.launch(Dispatchers.IO) {
-                            val db = Room.databaseBuilder(
-                                context,
-                                AppDatabase::class.java,
-                                "MensaDatabase"
-                            ).build()
-                            val userDao = db.userDao()
-
-                            //Controllo se l'utente è già presente nel Database locale
-                            val existingUser = userDao.SelectUser(email_)
-                            if (existingUser == null) {
-
-                                // L'utente non esiste ancora nel database, quindi è sicuro inserirlo
-                                userDao.InsertUser(user_)
-
-                            } else {
-
-                                // L'utente con questa email esiste già nel database locale
-
-                            }
-
-                        }
+                        //Passo l'utente al LiveData
+                        _utenteSelezionato.postValue(user_)
 
 
 
-                            showToast(context, "Accesso effettuato")
-                            SecurePreferencesManager.saveUser(context, user)
+                        showToast(context, "Accesso effettuato")
+//                            SecurePreferencesManager.saveUser(context, user)
 
 
-                        // Verifica se l'activity corrente è l'activity di login
-                        if (context is LoginActivity) {
-                            val intent = Intent(context, HomeActivity::class.java)
-                            context.startActivity(intent)
-                            (context as LoginActivity).finish()
-                        }
+
 
 
 
@@ -481,6 +453,84 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
             }
         })
     }
+
+
+    fun insertTransazione(binding: ActivityPortafoglioBinding, email: String?,  tipo: String, quantita: Int) {
+        val gson = Gson()
+        val string  =
+            "{\"email\": \"$email\", \"tipo\": \"$tipo\", \"quantita\": \"$quantita\"}"
+
+        val json = gson.fromJson(string, JsonObject::class.java)
+        Client.retrofit.insertTransizione(json).enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    _success.value = true
+
+
+
+
+
+
+                    showToast(binding.root.context, "Transazione inviata")
+                    } else {
+                        _success.value = false
+                        Log.e("insertTransazione", "Error in transazione")
+                    }
+                }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                _success.value = false
+                Log.e("insertTransazione", "Failed to send transazione", t)
+            }
+        })
+    }
+
+
+    fun getSaldo(binding: ActivityPortafoglioBinding, email: String?) {
+        val gson = Gson()
+        val string  =
+            "{\"email\": \"$email\"}"
+
+        val json = gson.fromJson(string, JsonObject::class.java)
+
+        Client.retrofit.getSaldo(email).enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    _success.value = true
+
+                    val risposta: JsonObject? = response.body()
+
+//                    val prezzo_pranzo_completo = risposta.get("prezzo_pranzo_completo")?.asString
+
+                    if (risposta != null) {
+
+                        val saldo = risposta.asJsonObject
+
+                        binding.textSaldoValore.text = saldo.get("saldo_totale")?.asString
+
+
+//                        for (i in 0 until risposta.size()) {
+//                            val transazione = risposta[i].asJsonObject
+//                            val tipo = transazione.get("tipo")?.asString
+//                            val quantita = transazione.get("quantita")?.asString
+//
+//
+//                        }
+
+
+                    } else {
+                        _success.value = false
+                        Log.e("getSaldo", "Error in getSaldo")
+                    }
+                }
+            }
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                _success.value = false
+                Log.e("getSaldo", "Failed to getSaldo", t)
+            }
+        })
+    }
+
 
 
     fun reset() {
