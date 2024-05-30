@@ -43,6 +43,12 @@ import java.util.Locale
 
 class SharedViewModel(application: Application) : AndroidViewModel(application) {
 
+    private val _prezzi = MutableLiveData<Prezzi?>().apply { value = null }
+    val prezzi: LiveData<Prezzi?> get() = _prezzi
+
+    private val _saldo = MutableLiveData<Float?>().apply { value = null }
+    val saldo: LiveData<Float?> get() = _saldo
+
     private val _itemList = MutableLiveData<ArrayList<Utente>>().apply { value = ArrayList() }
     val itemList: LiveData<ArrayList<Utente>> get() = _itemList
 
@@ -81,6 +87,8 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
                     Log.d("risposta", risposta.toString())
 
                     if (risposta != null) {
+
+                        //Raccolgo i dati della risposta json
                         val nome_ = risposta.get("nome")?.asString ?: ""
                         val cognome_ = risposta.get("cognome")?.asString ?: ""
                         val email_ = risposta.get("email")?.asString ?: ""
@@ -88,21 +96,13 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
                         val password_ = risposta.get("password")?.asString ?: ""
 
 
-                        //Prendo l'utente presente nel DB locale
+                        //Prendo l'utente usando i dati
                         val user_ = User(email_,password_,nome_, cognome_, nascita_)
 
                         //Passo l'utente al LiveData
                         _utenteSelezionato.postValue(user_)
 
-
-
                         showToast(context, "Accesso effettuato")
-//                            SecurePreferencesManager.saveUser(context, user)
-
-
-
-
-
 
                     } else {
                         showToast(context, "Accesso negato: risposta nulla")
@@ -133,23 +133,25 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
 
                     if(risposta != null){
 
-                        val prezzo_pranzo_completo = risposta.get("prezzo_pranzo_completo")?.asString
-                        val prezzo_cena_completa = risposta.get("prezzo_cena_completa")?.asString
-                        val prezzo_primo = risposta.get("prezzo_primo")?.asString
-                        val prezzo_secondo = risposta.get("prezzo_secondo")?.asString
-                        val prezzo_contorno = risposta.get("prezzo_contorno")?.asString
 
-                        binding.textCostoPranzoValore.text = prezzo_pranzo_completo
-                        binding.textCostoCenaValore.text = prezzo_cena_completa
-                        binding.textPrezzoPrimoValore.text = prezzo_primo
-                        binding.textPrezzoSecondoValore.text = prezzo_secondo
-                        binding.textPrezzoContornoValore.text = prezzo_contorno
+                        val prezzo_pranzo_completo = risposta.get("prezzo_pranzo_completo")?.asFloat
 
 
+                        val prezzo_cena_completa = risposta.get("prezzo_cena_completa")?.asFloat
+//                        val prezzo_cena_completaInt = prezzo_cena_completaString?.toIntOrNull()
+                        val prezzo_primo = risposta.get("prezzo_primo")?.asFloat
+//                        val prezzo_primoInt = prezzo_primoString?.toIntOrNull()
+                        val prezzo_secondo = risposta.get("prezzo_secondo")?.asFloat
+//                        val prezzo_secondoInt = prezzo_secondoString?.toIntOrNull()
+                        val prezzo_contorno = risposta.get("prezzo_contorno")?.asFloat
+//                        val prezzo_contornoInt = prezzo_contornoString?.toIntOrNull()
 
-
+                        val prezzo = Prezzi( prezzo_pranzo_completo= prezzo_pranzo_completo?.toInt(), prezzo_primo = prezzo_primo?.toInt(), prezzo_secondo = prezzo_secondo?.toInt(), prezzo_contorno = prezzo_contorno?.toInt(), prezzo_cena_completa = prezzo_cena_completa?.toInt(), id = 1)
 //
-//
+                        Log.d("PREZOOOOOO", prezzo_primo.toString())
+                        _prezzi.postValue(prezzo)
+
+
 //                        // Utilizzo le coroutine per eseguire l'operazione del database su un thread di background
 //                        viewModelScope.launch(Dispatchers.IO) {
 //
@@ -504,9 +506,13 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
 
                     if (risposta != null) {
 
-                        val saldo = risposta.asJsonObject
+                        val saldoo = risposta.asJsonObject
 
-                        binding.textSaldoValore.text = saldo.get("saldo_totale")?.asString
+                        val nuovo_saldo = risposta.get("saldo_totale").asFloat
+
+                        _saldo.postValue(nuovo_saldo)
+
+//                        binding.textSaldoValore.text = saldoo.get("saldo_totale")?.asString
 
 
 //                        for (i in 0 until risposta.size()) {

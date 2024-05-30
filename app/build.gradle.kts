@@ -3,11 +3,13 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("kotlin-kapt")
     id ("kotlin-parcelize")
+
 }
 
 android {
     namespace = "com.example.managermensa"
     compileSdk = 34
+
 
     defaultConfig {
         applicationId = "com.example.managermensa"
@@ -74,4 +76,6 @@ dependencies {
 
     implementation("androidx.room:room-runtime:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
+
+
 }
