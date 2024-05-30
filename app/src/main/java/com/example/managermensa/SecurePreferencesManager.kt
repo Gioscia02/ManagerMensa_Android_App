@@ -12,6 +12,7 @@ object SecurePreferencesManager {
     private const val KEY_COGNOME = "cognome"
     private const val KEY_NASCITA = "nascita"
 
+
     fun saveUser(context: Context, user: Utente) {
         val sharedPrefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         with(sharedPrefs.edit()) {

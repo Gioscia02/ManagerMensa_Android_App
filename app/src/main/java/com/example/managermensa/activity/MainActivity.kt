@@ -7,9 +7,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.room.Room
 import com.example.managermensa.R
+import com.example.managermensa.activity.localdatabase.AppDatabase
 import com.example.managermensa.databinding.ActivityAccessoBinding
 import com.example.managermensa.databinding.ActivityMainBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,16 +27,34 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val user = SecurePreferencesManager.getUser(this)
-        if (user != null) {
-            // L'utente è già loggato, naviga alla HomeActivity
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
-            finish()
-        } else {
-            // L'utente non è loggato, rimani nella MainActivity
-        }
 
+
+
+
+        //Controllo se l'utente è rimasto loggato nel dispositivo
+        GlobalScope.launch(Dispatchers.IO) {
+
+            val db = Room.databaseBuilder(
+                applicationContext,
+                AppDatabase::class.java,
+                "MensaDatabase"
+            ).build()
+            val userDao = db.userDao()
+
+            //Applico la selezione al MensaDatabase
+            val user_ = userDao.SelectUsers()
+
+
+            if (user_ != null) {
+
+                // L'utente è già loggato, naviga alla HomeActivity
+                val intent = Intent(applicationContext, HomeActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                // L'utente non è loggato, rimani nella MainActivity
+            }
+        }
 
 
 

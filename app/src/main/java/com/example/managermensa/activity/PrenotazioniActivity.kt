@@ -40,6 +40,8 @@ class PrenotazioniActivity : AppCompatActivity() {
 
     val viewModel : SharedViewModel by viewModels()
 
+    var pasto: String = ""
+
 
 
 
@@ -47,6 +49,8 @@ class PrenotazioniActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityPrenotazioniBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        viewModel.getPrenotazioni(this,binding)
 
         val utente = SecurePreferencesManager.getUser(this)
 
@@ -81,6 +85,8 @@ class PrenotazioniActivity : AppCompatActivity() {
 
         binding.buttonPrenotaPranzo.setOnClickListener {
 
+            pasto = "pranzo"
+
             //Caricamento animazione al click del Button
             val scaleAnimation = AnimationUtils.loadAnimation(this.binding.buttonPrenotaPranzo.context,
                 R.anim.button_scale
@@ -94,8 +100,7 @@ class PrenotazioniActivity : AppCompatActivity() {
                 if (selectedTimePranzo != null) {
 
                     //Invio prenotazione
-                    viewModel.insertPrenotazione(this,binding,selectedTimePranzo.toString(), email)
-                    showToast(selectedTimePranzo.toString())
+                    viewModel.insertPrenotazione(this,binding,selectedTimePranzo.toString(), email, pasto)
 
                 } else {
                     showToast("Seleziona un orario per il pranzo prima di prenotare")
@@ -106,6 +111,8 @@ class PrenotazioniActivity : AppCompatActivity() {
         }
 
         binding.buttonPrenotaCena.setOnClickListener {
+
+            pasto = "cena"
 
             //Caricamento animazione al click del Button
             val scaleAnimation = AnimationUtils.loadAnimation(this.binding.buttonPrenotaCena.context,
@@ -118,7 +125,7 @@ class PrenotazioniActivity : AppCompatActivity() {
                 if (selectedTimeCena != null) {
 
                     //Invio prenotazione
-                    viewModel.insertPrenotazione(this,binding,selectedTimeCena.toString(), email)
+                    viewModel.insertPrenotazione(this,binding,selectedTimeCena.toString(), email, pasto)
 
                 } else {
                     showToast("Seleziona un orario per la cena prima di prenotare")

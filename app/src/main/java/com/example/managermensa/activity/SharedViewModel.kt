@@ -10,6 +10,13 @@ import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.managermensa.activity.localdatabase.AppDatabase
+import com.example.managermensa.activity.localdatabase.Prezzi
+import com.example.managermensa.activity.localdatabase.User
 import com.example.managermensa.activity.retrofit.Client
 import com.example.managermensa.databinding.ActivityPortafoglioBinding
 import com.example.managermensa.databinding.ActivityPrenotazioniBinding
@@ -20,10 +27,17 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.Calendar
 import java.util.Locale
 
@@ -74,16 +88,35 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
                         val password_ = risposta.get("password")?.asString ?: ""
 
 
-                            val user = Utente(nome_, cognome_, email_, password_, nascita_)
-                            val dbManager = UserDatabaseManager(context)
+                        val user = Utente(nome_, cognome_, email_, password_, nascita_)
+                        val user_ = User(email_,password_,nome_, cognome_, nascita_)
 
-                            // Inserire un nuovo utente nel DB locale
-                            val isInserted = dbManager.insertUser(user)
-                            if (isInserted) {
-                                Log.d("DB", "User inserted successfully")
+
+
+                        // Utilizzo le coroutine per eseguire l'operazione del database su un thread di background
+                        viewModelScope.launch(Dispatchers.IO) {
+                            val db = Room.databaseBuilder(
+                                context,
+                                AppDatabase::class.java,
+                                "MensaDatabase"
+                            ).build()
+                            val userDao = db.userDao()
+
+                            //Controllo se l'utente è già presente nel Database locale
+                            val existingUser = userDao.SelectUser(email_)
+                            if (existingUser == null) {
+
+                                // L'utente non esiste ancora nel database, quindi è sicuro inserirlo
+                                userDao.InsertUser(user_)
+
                             } else {
-                                Log.e("DB", "Error inserting user")
+
+                                // L'utente con questa email esiste già nel database locale
+
                             }
+
+                        }
+
 
 
                             showToast(context, "Accesso effettuato")
@@ -119,7 +152,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     }
 
 
-    fun getPrezzi(binding: ActivityPortafoglioBinding) {
+    fun getPrezzi(binding: ActivityPortafoglioBinding,context : Context) {
         Client.retrofit.getPrezzi().enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
@@ -128,11 +161,11 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
 
                     if(risposta != null){
 
-                        val prezzo_pranzo_completo = risposta.get("prezzo_pranzo_completo")?.asString ?: ""
-                        val prezzo_cena_completa = risposta.get("prezzo_cena_completa")?.asString ?: ""
-                        val prezzo_primo = risposta.get("prezzo_primo")?.asString ?: ""
-                        val prezzo_secondo = risposta.get("prezzo_secondo")?.asString ?: ""
-                        val prezzo_contorno = risposta.get("prezzo_contorno")?.asString ?: ""
+                        val prezzo_pranzo_completo = risposta.get("prezzo_pranzo_completo")?.asString
+                        val prezzo_cena_completa = risposta.get("prezzo_cena_completa")?.asString
+                        val prezzo_primo = risposta.get("prezzo_primo")?.asString
+                        val prezzo_secondo = risposta.get("prezzo_secondo")?.asString
+                        val prezzo_contorno = risposta.get("prezzo_contorno")?.asString
 
                         binding.textCostoPranzoValore.text = prezzo_pranzo_completo
                         binding.textCostoCenaValore.text = prezzo_cena_completa
@@ -141,6 +174,49 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
                         binding.textPrezzoContornoValore.text = prezzo_contorno
 
 
+
+
+//
+//
+//                        // Utilizzo le coroutine per eseguire l'operazione del database su un thread di background
+//                        viewModelScope.launch(Dispatchers.IO) {
+//
+//                            val db = Room.databaseBuilder(
+//                                context,
+//                                AppDatabase::class.java,
+//                                "MensaDatabase"
+//                            ).build()
+//                            val prezziDao = db.userDao()
+//                            val prezzi_db_remoto = Prezzi( 1,
+//                                risposta?.get("prezzo_pranzo_completo")?.asString?.toIntOrNull(),
+//                                 risposta?.get("prezzo_cena_completa")?.asString?.toIntOrNull(),
+//                                risposta?.get("prezzo_primo")?.asString?.toIntOrNull(),
+//                                risposta?.get("prezzo_secondo")?.asString?.toIntOrNull(),
+//                                risposta?.get("prezzo_contorno")?.asString?.toIntOrNull() )
+//
+//
+////                            if(prezziDao.Count()==0 || prezziDao.Uguali(prezzo_pranzo_completo,prezzo_cena_completa,prezzo_primo,prezzo_secondo,prezzo_contorno)== null) {
+////
+////                                Log.d("entrato", "SIIIIIIIIIIIIIIIIIIIII ")
+////                                prezziDao.deleteAllPrezzi()
+////                                prezziDao.InsertPrezzi(prezzi_db_remoto)
+////
+////                            }
+//                            //Controllo se l'utente è già presente nel Database locale
+//                            val prezzi = prezziDao.GetPrezzi()
+//                            withContext(Dispatchers.Main) {
+//                                // Torna al thread principale per aggiornare le viste UI
+//
+//                                if(prezzi != null) {
+//                                    Log.d("entrat22222222", prezzi.toString())
+//                                    binding.textCostoPranzoValore.text = prezzi.prezzo_pranzo_completo.toString()
+//                                    binding.textCostoCenaValore.text = prezzi.prezzo_cena_completa.toString()
+//                                    binding.textPrezzoPrimoValore.text = prezzi.prezzo_primo.toString()
+//                                    binding.textPrezzoSecondoValore.text = prezzi.prezzo_secondo.toString()
+//                                    binding.textPrezzoContornoValore.text = prezzi.prezzo_contorno.toString()
+//                                }
+//                            }
+//                        }
 
 
 
@@ -177,6 +253,78 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
             }
         })
     }
+
+
+
+
+
+    fun getPrenotazioni(context: Context, binding: ActivityPrenotazioniBinding) {
+        Client.retrofit.getPrenotazioni().enqueue(object : Callback<JsonArray> {
+            override fun onResponse(call: Call<JsonArray>, response: Response<JsonArray>) {
+                val oggi = LocalDate.now()
+                if (response.isSuccessful) {
+                    val prenotazioni: JsonArray? = response.body()
+                    if (prenotazioni != null) {
+                        val orariPrenotazioni = mutableListOf<String>()
+
+                        // Avvia una coroutine sul contesto IO
+                        GlobalScope.launch(Dispatchers.IO) {
+                            // Ottieni il database e il DAO
+                            val db = Room.databaseBuilder(
+                                context,
+                                AppDatabase::class.java,
+                                "MensaDatabase"
+                            ).build()
+                            val userDao = db.userDao()
+
+                            // Seleziona l'utente dal database
+                            val user_ = userDao.SelectUsers()
+                            val email_ = user_.email
+
+                            // Itera su ogni elemento della JsonArray
+                            for (i in 0 until prenotazioni.size()) {
+                                val prenotazione = prenotazioni[i].asJsonObject
+                                val orario = prenotazione.get("orario")?.asString
+                                val giorno = prenotazione.get("giorno")?.asString
+                                val email = prenotazione.get("email")?.asString
+
+                                if (orario != null && giorno == oggi.toString() && email_ == email) {
+                                    // Aggiungi l'orario alla lista degli orari delle prenotazioni
+                                    orariPrenotazioni.add(orario.dropLast(2))
+                                }
+                            }
+
+                            // Torna al thread principale per aggiornare la UI
+                            withContext(Dispatchers.Main) {
+                                // Ora puoi utilizzare la lista degli orari per visualizzarli o eseguire altre operazioni
+                                // Ad esempio, puoi impostare il testo della textView come concatenazione degli orari
+                                binding.textPrenotazioniOggi.text = orariPrenotazioni.joinToString(", ")
+                            }
+                        }
+                    } else {
+                        showToast(context, "La risposta del server è vuota")
+                    }
+                } else {
+                    showToast(context, "Accesso negato: risposta non valida")
+                    Log.e("getPrenotazioni", "Risposta non valida dal server")
+                }
+            }
+
+            override fun onFailure(call: Call<JsonArray>, t: Throwable) {
+                Log.e("getPrenotazioni", "Failed to get prenotazioni", t)
+                showToast(context, "Accesso negato: errore di connessione")
+            }
+        })
+    }
+
+
+
+
+
+
+
+
+
 
     fun updateUtente(emailattuale: String?,emailnuova: String?,password: String?, nome: String?, cognome: String?,nascita: String? ) {
         val gson = Gson()
@@ -285,9 +433,10 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
         })
     }
 
-    fun insertPrenotazione(context: Context, binding: ActivityPrenotazioniBinding,orario:String, email: String?) {
+    fun insertPrenotazione(context: Context, binding: ActivityPrenotazioniBinding,orario:String, email: String?, pasto: String?) {
+       val localdate= LocalDate.now()
         val gson = Gson()
-        val string = "{\"email\": \"$email\"}"
+        val string = "{\"email\": \"$email\", \"giorno\": \"$localdate\", \"orario\": \"$orario\", \"pasto\": \"$pasto\"}"
         val json = gson.fromJson(string, JsonObject::class.java)
 
         // Invio della richiesta di inserimento della prenotazione tramite Retrofit
@@ -296,42 +445,33 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
                 if (response.isSuccessful) {
                     _success.value = true
 
-                    if (context != null) {
+                    val risposta: JsonObject? = response.body()
+                    Log.d("risposta", risposta.toString())
 
-                        val dbManager = UserDatabaseManager(context)
+                    if (risposta != null) {
 
-                        // Ottieni la data e l'orario corrente
-                        val currentTime = Calendar.getInstance()
-                        val formattedDate = SimpleDateFormat(
-                            "yyyy-MM-dd",
-                            Locale.getDefault()
-                        ).format(currentTime.time)
-//                        val formattedTime =
-//                            SimpleDateFormat("HH:mm", Locale.getDefault()).format(currentTime.time)
-                        val dateTime = formattedDate
+                        if (context != null) {
 
-                        Log.d("gtrggrgg", orario)
-                        // Inserisci la prenotazione nel database locale
-                        val isInserted = dbManager.insertPrenotazione(email, orario, dateTime.toString())
-                        if (isInserted) {
-                            Log.d("DB", "Prenotazione inserita correttamente")
+
+                            Log.d("gtrggrgg", orario)
+
+
+                            showToast(binding.root.context, "Prenotazione effettuata")
+
+                            // Pulizia campo
+                            binding.selectedTimeTextViewPranzo.text = ""
+                            binding.selectedTimeTextViewCena.text = ""
+
+                            // Imposta l'orario della prenotazione nella TextView
+                            binding.textPrenotazioniOggi.text =
+                                "${binding.textPrenotazioniOggi.text}    $orario"
                         } else {
-                            Log.e("DB", "Errore nell'inserimento della prenotazione")
+                            _success.value = false
+                            Log.e("insertPrenotazione", "Error in insertion")
                         }
-
-                        showToast(binding.root.context, "Prenotazione effettuata")
-
-                        // Pulizia campo
-                        binding.selectedTimeTextViewPranzo.text = ""
-                        binding.selectedTimeTextViewCena.text = ""
-
-                        // Imposta l'orario della prenotazione nella TextView
-                        binding.textPrenotazioniOggi.text =
-                            "${binding.textPrenotazioniOggi.text}    $orario"
-                    } else {
-                        _success.value = false
-                        Log.e("insertPrenotazione", "Error in insertion")
                     }
+
+                    showToast(context,"Prenotazione Non effettuata")
                 }
             }
 

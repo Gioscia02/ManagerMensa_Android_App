@@ -9,10 +9,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.room.Room
 
 
 import com.example.managermensa.R
+import com.example.managermensa.activity.localdatabase.AppDatabase
 import com.example.managermensa.databinding.ActivityAccountBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class AccountActivity : AppCompatActivity() {
@@ -77,6 +82,22 @@ class AccountActivity : AppCompatActivity() {
 
             //Cancella le credenziali
             SecurePreferencesManager.clearUser(this)
+
+            GlobalScope.launch(Dispatchers.IO) {
+
+                val db = Room.databaseBuilder(
+                    applicationContext,
+                    AppDatabase::class.java,
+                    "MensaDatabase"
+                ).build()
+                val userDao = db.userDao()
+
+                val users = userDao.SelectUsers()
+
+                //Applico la selezione al MensaDatabase
+                val user_ = userDao.DeleteUser(users)
+
+            }
 
             //Caricamento animazione al click del Button
             val scaleAnimation = AnimationUtils.loadAnimation(this.binding.buttonLogout.context,

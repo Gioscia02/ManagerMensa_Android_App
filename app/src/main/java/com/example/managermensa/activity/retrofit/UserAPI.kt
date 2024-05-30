@@ -29,6 +29,9 @@ interface UserAPI {
     @POST("$USER_URI/prenotazione")
     fun insertPrenotazione( @Body body: JsonObject): Call<JsonObject>
 
+    @GET("$USER_URI/prenotazione")
+    fun getPrenotazioni(): Call<JsonArray>
+
 
     @GET(USER_URI)
     fun getUtenti(): Call<JsonArray>
@@ -51,7 +54,7 @@ interface UserAPI {
 
 
     companion object {
-        const val BASE_URL = "http://192.168.1.84:9000/"
+        const val BASE_URL = "http://192.168.116.242:9000/"
         const val USER_URI = "pwm/utenti"
 
     }
