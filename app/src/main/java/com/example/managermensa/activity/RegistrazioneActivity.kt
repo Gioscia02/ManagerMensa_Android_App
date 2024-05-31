@@ -16,8 +16,14 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.room.Room
 import com.example.managermensa.R
+import com.example.managermensa.activity.localdatabase.AppDatabase
 import com.example.managermensa.databinding.ActivityRegistrazioneBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 
 
@@ -50,6 +56,43 @@ class RegistrazioneActivity : AppCompatActivity() {
                         binding.editTextPassword.text.toString()
                     )
 
+
+                    viewModel.user.observe(this){result->
+                        if(result!=null) {
+                            GlobalScope.launch(Dispatchers.IO) {
+
+                                val db = Room.databaseBuilder(
+                                    applicationContext,
+                                    AppDatabase::class.java,
+                                    "MensaDatabase"
+                                ).build()
+                                val userDao = db.userDao()
+
+
+                                //Inserisco il nuovo utente localmente
+                                val user_ = userDao.InsertUser(result)
+
+
+//                            if (user_ != null) {
+//                                // Inserisco nei campi i dati attuali dell'utente
+//                                withContext(Dispatchers.Main) {
+//                                    editTextNome.setText(user_.nome)
+//                                    editTextCognome.setText(user_.cognome)
+//                                    editTextEmail.setText(user_.email)
+//                                    editTextNascita.setText(user_.nascita)
+//                                    editTextPassword.setText(user_.password)
+//                                }
+//                            }
+                            }
+
+                            // Memorizza l'account loggato localmente
+//                            SecurePreferencesManager.saveUser(context, user)
+                            val intent = Intent(this, HomeActivity::class.java)
+                            startActivity(intent)
+                        }
+
+                    }
+
                 } else {
                     showToast("Inserisci una email valida")
                 }
@@ -81,9 +124,7 @@ class RegistrazioneActivity : AppCompatActivity() {
                 binding.editTextPassword.text.isNotEmpty()
     }
 
-    private fun insetItem(nome: String, cognome: String, nascita: String, email: String, password: String) {
-        // Codice per inserire l'utente nel backend
-    }
+
 
     private fun showDatePickerDialog(context: Context) {
         val calendar = Calendar.getInstance()

@@ -107,10 +107,17 @@ class LoginActivity : AppCompatActivity() {
 
                         }
 
+                        //Passo alla schermata home
+                        val intent = Intent(this, HomeActivity::class.java)
+                        startActivity(intent)
+                        finish()
+
+                        showToast("Accesso effettuato")
 
                     }
-                    showToast("Accesso effettuato")
-
+                    else {
+                        showToast("Accesso non riuscito")
+                    }
                 }
 
 
@@ -121,9 +128,7 @@ class LoginActivity : AppCompatActivity() {
                 )
                 binding.buttonAccedi.startAnimation(scaleAnimation)
 
-                val intent = Intent(this, HomeActivity::class.java)
-                startActivity(intent)
-                finish()
+
 
 
 
