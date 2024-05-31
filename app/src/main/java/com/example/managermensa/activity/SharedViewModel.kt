@@ -53,6 +53,20 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     private val _user = MutableLiveData<User>().apply { value = null }
     val user: LiveData<User> get() = _user
 
+    //Aggiornamento Utente
+    private val _update = MutableLiveData<Boolean>().apply { value = null }
+    val update: LiveData<Boolean> get() = _update
+
+
+
+    //Avvenuta  Prenotazione
+    private val _prenotazione = MutableLiveData<Boolean>().apply { value = null }
+    val prenotazione: LiveData<Boolean> get() = _prenotazione
+
+    //Orario Prenotazione
+    private val _orarioprenotazione = MutableLiveData<String>().apply { value = null }
+    val orarioprenotazione: LiveData<String> get() = _orarioprenotazione
+
     private val _itemList = MutableLiveData<ArrayList<User>>().apply { value = ArrayList() }
     val itemList: LiveData<ArrayList<User>> get() = _itemList
 
@@ -83,7 +97,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
 //        }
 //    }
 
-    fun getUtente(context: Context, email: String, password: String) {
+    fun getUtente(email: String, password: String) {
         Client.retrofit.findUtente(email, password).enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
@@ -106,21 +120,20 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
                         //Passo l'utente al LiveData
                         _utenteSelezionato.postValue(user_)
 
-                        showToast(context, "Accesso effettuato")
+
 
                     } else {
-                        showToast(context, "Accesso negato: risposta nulla")
+
                         Log.e("getUtente", "Risposta nulla dal server")
                     }
                 } else {
-                    showToast(context, "Accesso negato: risposta non valida")
+
                     Log.e("getUtente", "Risposta non valida dal server")
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 Log.e("getUtente", "Failed to get user", t)
-                showToast(context, "Accesso negato: errore di connessione")
             }
         })
 
@@ -207,16 +220,16 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     }
 
 
-    fun getPrenotazioni(context: Context, binding: ActivityPrenotazioniBinding) {
+    fun getPrenotazioni(context: Context) {
         Client.retrofit.getPrenotazioni().enqueue(object : Callback<JsonArray> {
             override fun onResponse(call: Call<JsonArray>, response: Response<JsonArray>) {
                 val oggi = LocalDate.now()
                 if (response.isSuccessful) {
                     val prenotazioni: JsonArray? = response.body()
                     if (prenotazioni != null) {
+                        //Lista per contenere le prenotazioni di oggi
                         val orariPrenotazioni = mutableListOf<String>()
-
-                        // Avvia una coroutine sul contesto IO
+                        
                         GlobalScope.launch(Dispatchers.IO) {
                             // Ottieni il database e il DAO
                             val db = Room.databaseBuilder(
@@ -230,7 +243,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
                             val user_ = userDao.SelectUsers()
                             val email_ = user_.email
 
-                            // Itera su ogni elemento della JsonArray
+                            // Itera su ogni elemento della JsonArray per prendere i dati che abbiamoo richiesto
                             for (i in 0 until prenotazioni.size()) {
                                 val prenotazione = prenotazioni[i].asJsonObject
                                 val orario = prenotazione.get("orario")?.asString
@@ -239,29 +252,25 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
 
                                 if (orario != null && giorno == oggi.toString() && email_ == email) {
                                     // Aggiungi l'orario alla lista degli orari delle prenotazioni
-                                    orariPrenotazioni.add(orario.dropLast(2))
+                                    orariPrenotazioni.add(orario)
                                 }
                             }
 
-                            // Torna al thread principale per aggiornare la UI
-                            withContext(Dispatchers.Main) {
-                                // Ora puoi utilizzare la lista degli orari per visualizzarli o eseguire altre operazioni
-                                // Ad esempio, puoi impostare il testo della textView come concatenazione degli orari
-                                binding.textPrenotazioniOggi.text = orariPrenotazioni.joinToString(", ")
-                            }
+                            //Memorizzo gli orari delle prenotazioni di oggi, comverto da mutablelist a string usando joinToString
+                            _orarioprenotazione.postValue(orariPrenotazioni.joinToString(", "))
+
                         }
-                    } else {
-                        showToast(context, "La risposta del server è vuota")
+
                     }
                 } else {
-                    showToast(context, "Accesso negato: risposta non valida")
+
                     Log.e("getPrenotazioni", "Risposta non valida dal server")
                 }
             }
 
             override fun onFailure(call: Call<JsonArray>, t: Throwable) {
                 Log.e("getPrenotazioni", "Failed to get prenotazioni", t)
-                showToast(context, "Accesso negato: errore di connessione")
+
             }
         })
     }
@@ -281,7 +290,14 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
                 if (response.isSuccessful) {
                     _success.value = true
                     val risposta = response.body()
-                    Log.d("TAG", risposta.toString())
+
+                    if(risposta!=null){
+
+                        _update.postValue(true)
+
+                        Log.d("TAG", risposta.toString())
+                    }
+
                 } else {
                     _success.value = false
                     Log.d("updateUtente", "Errore aggiornamento Utente")
@@ -328,33 +344,6 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
 
                         _success.value = true
 
-//                        if (context != null) {
-//                            val dbManager = UserDatabaseManager(context)
-//
-//                            // Inserire un nuovo utente nel DB locale
-//                            val user = Utente(nome, cognome, email, password, nascita)
-//                            val isInserted = dbManager.insertUser(user)
-//                            if (isInserted) {
-//                                Log.d("DB", "User inserted successfully")
-//                            } else {
-//                                Log.e("DB", "Error inserting user")
-//                            }
-//
-//                            // Recuperare un utente per email
-//                            val retrievedUser = dbManager.getUserByEmail(email)
-//                            if (retrievedUser != null) {
-//                                Log.d("DB", "User found: $retrievedUser")
-//                            } else {
-//                                Log.e("DB", "User not found")
-//                            }
-//
-//                            // Memorizza l'account loggato localmente
-//                            SecurePreferencesManager.saveUser(context, user)
-//                            val intent = Intent(context, HomeActivity::class.java)
-//                            context.startActivity(intent)
-//                        } else {
-//                            Log.e("insertItem", "Context is null, cannot save credentials")
-//                        }
                     } else {
                         _success.value = false
                         Log.e("insertItem", "Error in insertion")
@@ -397,7 +386,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
         })
     }
 
-    fun insertPrenotazione(context: Context, binding: ActivityPrenotazioniBinding,orario:String, email: String?, pasto: String?) {
+    fun insertPrenotazione(orario:String, email: String?, pasto: String?) {
        val localdate= LocalDate.now()
         val gson = Gson()
         val string = "{\"email\": \"$email\", \"giorno\": \"$localdate\", \"orario\": \"$orario\", \"pasto\": \"$pasto\"}"
@@ -410,30 +399,18 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
                     _success.value = true
 
                     val risposta: JsonObject? = response.body()
-                    Log.d("risposta", risposta.toString())
 
                     if (risposta != null) {
+                        Log.d("risposta", risposta.toString())
 
-                        if (context != null) {
+                        if (risposta.get("success").asBoolean == true) {
 
                             Log.d("gtrggrgg", orario)
+                            _prenotazione.postValue(true)
+                            _orarioprenotazione.postValue(orario)
 
-                            showToast(binding.root.context, "Prenotazione effettuata")
-
-                            // Pulizia campo
-                            binding.selectedTimeTextViewPranzo.text = ""
-                            binding.selectedTimeTextViewCena.text = ""
-
-                            // Imposta l'orario della prenotazione nella TextView
-                            binding.textPrenotazioniOggi.text =
-                                "${binding.textPrenotazioniOggi.text}    $orario"
-                        } else {
-                            _success.value = false
-                            Log.e("insertPrenotazione", "Error in insertion")
                         }
                     }
-
-                    showToast(context,"Prenotazione Non effettuata")
                 }
             }
 

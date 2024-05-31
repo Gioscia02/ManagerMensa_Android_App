@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
                 applicationContext,
                 AppDatabase::class.java,
                 "MensaDatabase"
-            ).build()
+            ).fallbackToDestructiveMigration().build()
             val userDao = db.userDao()
 
             //Applico la selezione al MensaDatabase

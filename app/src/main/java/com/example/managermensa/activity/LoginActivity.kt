@@ -74,7 +74,7 @@ class LoginActivity : AppCompatActivity() {
 
 
                 //Chiamo la funzione getUtente connessa al DB esterno
-                viewModel.getUtente(this, binding.editTextEmail.text.toString(),
+                viewModel.getUtente( binding.editTextEmail.text.toString(),
                     binding.editTextPassword.text.toString())
 
 

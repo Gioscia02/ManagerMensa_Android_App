@@ -14,7 +14,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.lifecycleScope
+import androidx.room.Room
 import com.example.managermensa.R
+import com.example.managermensa.activity.localdatabase.AppDatabase
 import com.example.managermensa.activity.retrofit.Client
 import com.example.managermensa.databinding.ActivityPrenotazioniBinding
 import com.google.gson.Gson
@@ -22,6 +25,10 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import org.json.JSONObject
@@ -43,6 +50,10 @@ class PrenotazioniActivity : AppCompatActivity() {
     var pasto: String = ""
 
 
+    var email_ = ""
+
+    var prenotazioneResult: Boolean? = null
+    var orarioPrenotazioneResult: String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,13 +63,27 @@ class PrenotazioniActivity : AppCompatActivity() {
 
         viewModel.getPrenotazioni(this,binding)
 
-        val utente = SecurePreferencesManager.getUser(this)
-
         //Recupero email
-        val email : String? = utente?.email
-        Log.d("aaaaaaaaaaaaaaaaa", utente.toString())
-        val dbManager = UserDatabaseManager(this)
-//        sendReservation()
+        lifecycleScope.launch (Dispatchers.IO){
+            val db = Room.databaseBuilder(
+                applicationContext,
+                AppDatabase::class.java,
+                "MensaDatabase"
+            ).build()
+            val userDao = db.userDao()
+            val user_attuale = userDao.SelectUsers()
+
+            val email : String = user_attuale.email
+
+            email_ = email
+
+            Log.d("aaaaaaaaaaaaaaaaa", user_attuale.toString())
+
+
+        }
+
+//        val dbManager = UserDatabaseManager(this)
+
 
         val toolbar = binding.toolbarPrenotazioni
         setSupportActionBar(toolbar)
@@ -72,17 +97,17 @@ class PrenotazioniActivity : AppCompatActivity() {
         }
 
 
-        binding.textPrenotazioniOggi.text = dbManager.getOrarioByEmail(email)
 
-
+        //Button per la selezione dell'orario di pranzo
         binding.selectTimeButtonPranzo.setOnClickListener {
             showTimePickerDialog(true)
         }
-
+        //Button per la selezione dell'orario di cena
         binding.selectTimeButtonCena.setOnClickListener {
             showTimePickerDialog(false)
         }
 
+        //Button per l'invio di prenotazione per pranzo
         binding.buttonPrenotaPranzo.setOnClickListener {
 
             pasto = "pranzo"
@@ -100,7 +125,7 @@ class PrenotazioniActivity : AppCompatActivity() {
                 if (selectedTimePranzo != null) {
 
                     //Invio prenotazione
-                    viewModel.insertPrenotazione(this,binding,selectedTimePranzo.toString(), email, pasto)
+                    viewModel.insertPrenotazione(selectedTimePranzo.toString(), email_, pasto)
 
                 } else {
                     showToast("Seleziona un orario per il pranzo prima di prenotare")
@@ -110,6 +135,8 @@ class PrenotazioniActivity : AppCompatActivity() {
             }
         }
 
+
+        //Button di invio prenotazione per cena
         binding.buttonPrenotaCena.setOnClickListener {
 
             pasto = "cena"
@@ -125,7 +152,7 @@ class PrenotazioniActivity : AppCompatActivity() {
                 if (selectedTimeCena != null) {
 
                     //Invio prenotazione
-                    viewModel.insertPrenotazione(this,binding,selectedTimeCena.toString(), email, pasto)
+                    viewModel.insertPrenotazione(selectedTimeCena.toString(), email_, pasto)
 
                 } else {
                     showToast("Seleziona un orario per la cena prima di prenotare")
@@ -134,6 +161,31 @@ class PrenotazioniActivity : AppCompatActivity() {
                 showToast("Non puoi prenotare adesso")
             }
         }
+
+
+
+        //Osservo se l'inserimento di una prenotazione è avvenuta con successo
+        viewModel.prenotazione.observe(this) { result ->
+            if (result != null) {
+                prenotazioneResult = result
+                checkResults()
+            }
+        }
+
+        //Osservo l'orario della prenotazione effettuata
+        viewModel.orarioprenotazione.observe(this) { result2 ->
+            if (result2 != null) {
+                binding.textPrenotazioniOggi.text = result2
+                orarioPrenotazioneResult = result2
+                Log.d("ORARIOO", result2.toString())
+                checkResults()
+            }
+        }
+
+
+
+
+
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -165,7 +217,6 @@ class PrenotazioniActivity : AppCompatActivity() {
                 } else {
                     showToast("Seleziona un orario accettabile")
                 }
-
             },
             currentTime.hour,
             currentTime.minute,
@@ -176,10 +227,25 @@ class PrenotazioniActivity : AppCompatActivity() {
     }
 
 
-
-
-
-
+    //Funzione che verificando che l'invio di prenotazione è andato a buon fine e che ci sia un orario per poi comunicare all'utente il risultato
+    fun checkResults() {
+//        if (prenotazioneResult != null && orarioPrenotazioneResult != null) {
+//            // Entrambi i risultati sono disponibili, esegui il blocco di codice
+//            val result = prenotazioneResult
+//            val result2 = orarioPrenotazioneResult
+//
+//            // Pulizia campo
+//            binding.selectedTimeTextViewPranzo.text = ""
+//            binding.selectedTimeTextViewCena.text = ""
+//
+//            // Imposta l'orario della prenotazione nella TextView
+//            binding.textPrenotazioniOggi.text =
+//                "${binding.textPrenotazioniOggi.text}    $result2"
+//        }
+//        else{
+//            showToast("Non è possibile prenotare")
+//        }
+    }
 
 
     private fun parseJsonToModel(jsonString: JsonArray): ArrayList<Utente> {
