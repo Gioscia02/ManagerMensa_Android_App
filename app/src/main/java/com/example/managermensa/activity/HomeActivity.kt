@@ -160,6 +160,8 @@ class HomeActivity : AppCompatActivity() {
 
         }
 
+
+
         }
 
     //Per evitare di tornare nella schermata di accesso

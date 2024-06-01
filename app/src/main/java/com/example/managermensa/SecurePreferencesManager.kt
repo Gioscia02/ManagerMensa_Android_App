@@ -2,7 +2,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
-import com.example.managermensa.activity.Utente
+import com.example.managermensa.data.Utente
 
 object SecurePreferencesManager {
     private const val PREFS_NAME = "user_prefs"

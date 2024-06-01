@@ -77,6 +77,21 @@ class AccountActivity : AppCompatActivity() {
 
         }
 
+        binding.buttonStoricoSpese.setOnClickListener{
+
+
+            //Caricamento animazione al click del Button
+            val scaleAnimation = AnimationUtils.loadAnimation(this.binding.buttonStoricoSpese.context,
+                R.anim.button_scale
+            )
+            binding.buttonStoricoSpese.startAnimation(scaleAnimation)
+
+
+            val intent = Intent(this,StoricospeseActivity::class.java)
+            startActivity(intent)
+
+        }
+
 
         //button di Logout
         binding.buttonLogout.setOnClickListener{

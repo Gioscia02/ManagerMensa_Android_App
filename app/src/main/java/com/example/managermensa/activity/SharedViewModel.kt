@@ -19,6 +19,7 @@ import com.example.managermensa.activity.localdatabase.Prezzi
 import com.example.managermensa.activity.localdatabase.User
 import com.example.managermensa.activity.retrofit.Client
 import com.example.managermensa.data.Avviso
+import com.example.managermensa.data.Transazione
 import com.example.managermensa.databinding.ActivityPortafoglioBinding
 import com.example.managermensa.databinding.ActivityPrenotazioniBinding
 import com.example.managermensa.databinding.ActivityRegistrazioneBinding
@@ -50,6 +51,10 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
 
     private val _saldo = MutableLiveData<Float?>().apply { value = null }
     val saldo: LiveData<Float?> get() = _saldo
+
+    //Tutti le transazioni
+    private val _transazioni = MutableLiveData<List<Transazione>>().apply { value = null }
+    val transazioni: LiveData<List<Transazione>> get() = _transazioni
 
     //Nuovo Utente
     private val _user = MutableLiveData<User>().apply { value = null }
@@ -571,7 +576,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     }
 
 
-    fun getSaldo(binding: ActivityPortafoglioBinding, email: String?) {
+    fun getSaldo( email: String?) {
         val gson = Gson()
         val string  =
             "{\"email\": \"$email\"}"
@@ -611,7 +616,79 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
 
 
 
+    fun getTransazioni(context: Context, email: String?) {
+        val gson = Gson()
+        val string  =
+            "{\"email\": \"$email\"}"
 
+        val json = gson.fromJson(string, JsonObject::class.java)
+
+        Client.retrofit.getTransazioni(email).enqueue(object : Callback<JsonArray> {
+            override fun onResponse(call: Call<JsonArray>, response: Response<JsonArray>) {
+                if (response.isSuccessful) {
+                    _success.value = true
+
+                    val transazioni_array_json: JsonArray? = response.body()
+                    var transazioni_array =  mutableListOf<Transazione>()
+
+                    if (transazioni_array_json != null) {
+
+                        GlobalScope.launch(Dispatchers.IO) {
+                            // Ottieni il database e il DAO
+                            val db = Room.databaseBuilder(
+                                context,
+                                AppDatabase::class.java,
+                                "MensaDatabase"
+                            ).build()
+                            val userDao = db.userDao()
+
+                            // Seleziona l'utente dal database
+                            val user_ = userDao.SelectUsers()
+                            val email_ = user_.email
+
+                            // Itera su ogni elemento della JsonArray per prendere i dati che abbiamoo richiesto
+                            for (i in 0 until transazioni_array_json.size()) {
+                                val transizione_presa = transazioni_array_json[i].asJsonObject
+                                val tipo = transizione_presa.get("tipo").asString
+                                val quantita = transizione_presa.get("quantita").asString
+
+                                // Supponiamo che avviso.get("data") restituisca un timestamp
+                                val timestamp = transizione_presa.get("data").asString  // Converti il timestamp in Long
+
+                                // Creazione di un oggetto SimpleDateFormat per formattare la data
+                                val dateFormat = SimpleDateFormat("dd/MM/yyyy")
+
+                                // Creazione di un oggetto Date dal timestamp
+                                val date = Date(timestamp)
+
+                                // Formattazione della data nel formato desiderato
+                                val data_formattata = dateFormat.format(date)
+//
+//                                val data = avviso.get("data").asString
+
+                                transazioni_array.add(Transazione(email_,data_formattata,tipo,quantita))
+
+
+                            }
+
+                            //Memorizzo gli orari delle prenotazioni di oggi, comverto da mutablelist a string usando joinToString
+                            _transazioni.postValue(transazioni_array)
+                        }
+
+
+
+                    } else {
+                        _success.value = false
+                        Log.e("getSaldo", "Error in getSaldo")
+                    }
+                }
+            }
+            override fun onFailure(call: Call<JsonArray>, t: Throwable) {
+                _success.value = false
+                Log.e("getSaldo", "Failed to getSaldo", t)
+            }
+        })
+    }
 
 
 

@@ -1,9 +1,7 @@
 package com.example.managermensa.activity
 
-import UserDatabaseManager
 import android.app.TimePickerDialog
 import android.os.Bundle
-import android.provider.ContactsContract.Contacts.Data
 import android.util.Log
 import android.view.animation.AnimationUtils
 import android.widget.TimePicker
@@ -12,30 +10,19 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
 import com.example.managermensa.R
 import com.example.managermensa.activity.localdatabase.AppDatabase
-import com.example.managermensa.activity.retrofit.Client
+import com.example.managermensa.data.Utente
 import com.example.managermensa.databinding.ActivityPrenotazioniBinding
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
-import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import okhttp3.*
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import org.json.JSONObject
-import java.io.IOException
-import java.time.LocalDate
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 
 class PrenotazioniActivity : AppCompatActivity() {
 

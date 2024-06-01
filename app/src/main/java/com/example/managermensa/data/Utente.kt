@@ -1,4 +1,4 @@
-package com.example.managermensa.activity
+package com.example.managermensa.data
 
 import java.sql.Date
 

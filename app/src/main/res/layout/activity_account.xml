@@ -125,6 +125,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/button_storico_spese"
                     android:layout_width="171dp"
                     android:layout_height="125dp"
                     android:layout_margin="10dp"

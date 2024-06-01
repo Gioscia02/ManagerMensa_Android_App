@@ -27,37 +27,7 @@ class AvvisiActivity : AppCompatActivity() {
     val viewModel : SharedViewModel by viewModels()
 
 
-    private val itemList = MutableLiveData<ArrayList<Utente>>()
-    init {
-        itemList.value = ArrayList()
-    }
 
-    val utenteSelezionato = MutableLiveData<Utente?>()
-    init {
-        utenteSelezionato.value = null
-    }
-
-    val position = MutableLiveData<Int>()
-    init {
-        position.value = -1
-    }
-
-    val success = MutableLiveData<Boolean>()
-    init {
-        success.value = false
-    }
-
-    fun getItemList(): LiveData<ArrayList<Utente>> {
-        return itemList
-    }
-
-    fun addItem(item: Utente) {
-        itemList.value?.add(item)
-    }
-
-    fun removeItem(item: Utente) {
-        itemList.value?.remove(item)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

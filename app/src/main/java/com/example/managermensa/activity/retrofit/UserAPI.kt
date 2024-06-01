@@ -54,8 +54,11 @@ interface UserAPI {
     @GET("$USER_URI/prezzi")
     fun getPrezzi(): Call<JsonObject>
 
-    @GET("$USER_URI/transazioni/{email}")
+    @GET("$USER_URI/saldo/{email}")
     fun getSaldo( @Path("email") email: String?): Call<JsonObject>
+
+    @GET("$USER_URI/transazioni/{email}")
+    fun getTransazioni( @Path("email") email: String?): Call<JsonArray>
 
 
 
