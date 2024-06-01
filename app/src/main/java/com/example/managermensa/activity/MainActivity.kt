@@ -57,7 +57,6 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-
         binding.buttonLogin.setOnClickListener{
 
             //Caricamento animazione al click del Button

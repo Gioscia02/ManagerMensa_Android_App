@@ -18,6 +18,7 @@ import com.example.managermensa.activity.localdatabase.AppDatabase
 import com.example.managermensa.activity.localdatabase.Prezzi
 import com.example.managermensa.activity.localdatabase.User
 import com.example.managermensa.activity.retrofit.Client
+import com.example.managermensa.data.Avviso
 import com.example.managermensa.databinding.ActivityPortafoglioBinding
 import com.example.managermensa.databinding.ActivityPrenotazioniBinding
 import com.example.managermensa.databinding.ActivityRegistrazioneBinding
@@ -39,6 +40,7 @@ import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class SharedViewModel(application: Application) : AndroidViewModel(application) {
@@ -58,6 +60,13 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     val update: LiveData<Boolean> get() = _update
 
 
+    //Tutti gli avvisi
+    private val _avvisi = MutableLiveData<List<Avviso>>().apply { value = null }
+    val avvisi: LiveData<List<Avviso>> get() = _avvisi
+
+    //L'ultimo avviso
+    private val _ultimoavviso = MutableLiveData<Avviso>().apply { value = null }
+    val ultimoavviso: LiveData<Avviso> get() = _ultimoavviso
 
     //Avvenuta  Prenotazione
     private val _prenotazione = MutableLiveData<Boolean>().apply { value = null }
@@ -229,7 +238,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
                     if (prenotazioni != null) {
                         //Lista per contenere le prenotazioni di oggi
                         val orariPrenotazioni = mutableListOf<String>()
-                        
+
                         GlobalScope.launch(Dispatchers.IO) {
                             // Ottieni il database e il DAO
                             val db = Room.databaseBuilder(
@@ -258,12 +267,9 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
 
                             //Memorizzo gli orari delle prenotazioni di oggi, comverto da mutablelist a string usando joinToString
                             _orarioprenotazione.postValue(orariPrenotazioni.joinToString(", "))
-
                         }
-
                     }
                 } else {
-
                     Log.e("getPrenotazioni", "Risposta non valida dal server")
                 }
             }
@@ -276,6 +282,123 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     }
 
 
+
+
+    fun getAvvisi(context: Context) {
+        Client.retrofit.getAvvisi().enqueue(object : Callback<JsonArray> {
+            override fun onResponse(call: Call<JsonArray>, response: Response<JsonArray>) {
+                val oggi = LocalDate.now()
+                if (response.isSuccessful) {
+                    val avvisi: JsonArray? = response.body()
+                    if (avvisi != null) {
+                        //Lista per contenere gli ultimi 3 avvisi
+                        val avvisi_lista = mutableListOf<Avviso>()
+
+                        GlobalScope.launch(Dispatchers.IO) {
+                            // Ottieni il database e il DAO
+                            val db = Room.databaseBuilder(
+                                context,
+                                AppDatabase::class.java,
+                                "MensaDatabase"
+                            ).build()
+                            val userDao = db.userDao()
+
+                            // Seleziona l'utente dal database
+                            val user_ = userDao.SelectUsers()
+                            val email_ = user_.email
+
+                            // Itera su ogni elemento della JsonArray per prendere i dati che abbiamoo richiesto
+                            for (i in 0 until avvisi.size()) {
+                                val avviso = avvisi[i].asJsonObject
+                                val titolo = avviso.get("titolo").asString
+                                val testo = avviso.get("testo").asString
+
+                                // Supponiamo che avviso.get("data") restituisca un timestamp
+                                val timestamp = avviso.get("data").asString  // Converti il timestamp in Long
+
+                                // Creazione di un oggetto SimpleDateFormat per formattare la data
+                                val dateFormat = SimpleDateFormat("dd/MM/yyyy")
+
+                                // Creazione di un oggetto Date dal timestamp
+                                val date = Date(timestamp)
+
+                                // Formattazione della data nel formato desiderato
+                                val data_formattata = dateFormat.format(date)
+//
+//                                val data = avviso.get("data").asString
+
+                                avvisi_lista.add(Avviso(titolo,data_formattata,testo))
+
+
+                            }
+
+                            //Memorizzo gli orari delle prenotazioni di oggi, comverto da mutablelist a string usando joinToString
+                            _avvisi.postValue(avvisi_lista)
+                        }
+                    }
+                } else {
+                    Log.e("getPrenotazioni", "Risposta non valida dal server")
+                }
+            }
+
+            override fun onFailure(call: Call<JsonArray>, t: Throwable) {
+                Log.e("getPrenotazioni", "Failed to get prenotazioni", t)
+
+            }
+        })
+    }
+
+
+    fun getUltimoavviso() {
+        Client.retrofit.getUltimoavviso().enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val risposta: JsonObject? = response.body()
+
+                    if (risposta != null) {
+                        // Prendi l'ultimo avviso dalla risposta
+                        val ultimoAvviso = risposta.asJsonObject
+
+                        if (ultimoAvviso != null) {
+                            // Puoi ora manipolare l'ultimo avviso come JsonObject
+                            // Ad esempio, se vuoi accedere ai singoli campi dell'avviso, puoi farlo in questo modo:
+                            val titolo = ultimoAvviso.getAsJsonPrimitive("titolo").asString
+                            val testo = ultimoAvviso.getAsJsonPrimitive("testo").asString
+//                            val timestamp = ultimoAvviso.getAsJsonPrimitive("timestamp").asString
+                            // Esegui altre operazioni necessarie con l'ultimo avviso
+
+                            // Supponiamo che avviso.get("data") restituisca un timestamp
+                            val timestamp = ultimoAvviso.get("data").asString  // Converti il timestamp in Long
+
+                            // Creazione di un oggetto SimpleDateFormat per formattare la data
+                            val dateFormat = SimpleDateFormat("dd/MM/yyyy")
+
+                            // Creazione di un oggetto Date dal timestamp
+                            val date = Date(timestamp)
+
+                            // Formattazione della data nel formato desiderato
+                            val data_formattata = dateFormat.format(date)
+
+
+                            _ultimoavviso.postValue(Avviso(titolo,data_formattata,testo))
+
+
+                        } else {
+                            Log.e("getUltimoavviso", "La risposta non contiene avvisi")
+                        }
+                    } else {
+                        Log.e("getUltimoavviso", "Risposta nulla")
+                    }
+                } else {
+                    Log.e("getUltimoavviso", "Errore nella risposta: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                Log.e("getUltimoavviso", "Errore nella chiamata: ${t.message}")
+            }
+        })
+    }
 
 
     fun updateUtente(emailattuale: String?,emailnuova: String?,password: String?, nome: String?, cognome: String?,nascita: String? ) {
@@ -407,7 +530,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
 
                             Log.d("gtrggrgg", orario)
                             _prenotazione.postValue(true)
-                            _orarioprenotazione.postValue(orario)
+                            _orarioprenotazione.postValue( orario +", " + _orarioprenotazione.value.toString())
 
                         }
                     }
@@ -485,6 +608,10 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
             }
         })
     }
+
+
+
+
 
 
 

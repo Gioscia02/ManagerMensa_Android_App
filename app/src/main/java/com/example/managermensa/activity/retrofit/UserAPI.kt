@@ -34,6 +34,9 @@ interface UserAPI {
 
 
 
+
+
+
     @GET("$USER_URI/prenotazione")
     fun getPrenotazioni(): Call<JsonArray>
 
@@ -44,6 +47,9 @@ interface UserAPI {
 
     @GET("$USER_URI/avvisi")
     fun getAvvisi(): Call<JsonArray>
+
+    @GET("$USER_URI/ultimoavviso")
+    fun getUltimoavviso(): Call<JsonObject>
 
     @GET("$USER_URI/prezzi")
     fun getPrezzi(): Call<JsonObject>

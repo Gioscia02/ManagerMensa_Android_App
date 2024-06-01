@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.animation.AnimationUtils
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModel
 import com.example.managermensa.R
 import com.example.managermensa.databinding.ActivityHomeBinding
 
@@ -14,6 +16,8 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeBinding
 
+    val viewModel : SharedViewModel by viewModels()
+
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,6 +25,21 @@ class HomeActivity : AppCompatActivity() {
 
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        viewModel.getUltimoavviso()
+
+        viewModel.ultimoavviso.observe(this){result->
+
+            if(result!=null) {
+
+                binding.ultimoAvvisoTitle.text = result.titolo
+                binding.ultimoAvvisoDate.text = result.data
+                binding.ultimoAvvisoDescription.text = result.testo
+
+
+            }
+
+        }
 
         enableEdgeToEdge()
 
@@ -85,7 +104,7 @@ class HomeActivity : AppCompatActivity() {
 
 
         //Controllo click sull'ultimo Avviso
-        binding.avvisiTopbar.setOnClickListener(){
+        binding.ultimoAvvisoContainer.setOnClickListener(){
 
             //Caricamento animazione al click del Button
 //            val scaleAnimation = AnimationUtils.loadAnimation(this.binding.buttonAvvisi.context,
@@ -125,7 +144,6 @@ class HomeActivity : AppCompatActivity() {
             //Cambio Activity
             val intent = Intent(this, AllergieActivity::class.java)
             startActivity(intent)
-
         }
 
         binding.buttonMenu.setOnClickListener{
@@ -141,11 +159,6 @@ class HomeActivity : AppCompatActivity() {
             startActivity(intent)
 
         }
-
-
-
-
-
 
         }
 

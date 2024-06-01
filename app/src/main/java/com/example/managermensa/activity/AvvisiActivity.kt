@@ -2,6 +2,7 @@ package com.example.managermensa.activity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -23,6 +24,7 @@ class AvvisiActivity : AppCompatActivity() {
     private lateinit var adapter: AvvisiAdapter // Aggiungo l'adapter per la RecyclerView
     val today = LocalDate.now() // Data odierna
 
+    val viewModel : SharedViewModel by viewModels()
 
 
     private val itemList = MutableLiveData<ArrayList<Utente>>()
@@ -63,11 +65,24 @@ class AvvisiActivity : AppCompatActivity() {
         binding = ActivityAvvisiBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Inizializza l'adapter e imposta la RecyclerView
-        adapter = AvvisiAdapter(getSampleAvvisi()) // Implementa la funzione getSampleAvvisi() per ottenere i dati degli avvisi
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        binding.recyclerView.adapter = adapter
+        viewModel.getAvvisi(this)
 
+        viewModel.avvisi.observe(this) { result ->
+
+
+            if (result != null) {
+                adapter = AvvisiAdapter(result)
+                binding.recyclerView.layoutManager = LinearLayoutManager(this).apply {
+                    reverseLayout = true
+                    stackFromEnd = true
+                }
+                binding.recyclerView.adapter = adapter
+
+
+
+            }
+
+        }
 
         //prendo il riferimento alla toolbar
         val toolbar = binding.toolbarAvvisi
@@ -88,15 +103,7 @@ class AvvisiActivity : AppCompatActivity() {
         }
     }
 
-    // Esempio di dati di avvisi di prova
-    private fun getSampleAvvisi(): List<Avviso> {
-        return listOf(
-            Avviso("Titolo Avviso 1",today, "Descrizione Avviso 1"),
-            Avviso("Titolo Avviso 2",today, "Descrizione Avviso 2"),
-            Avviso("Titolo Avviso 3",today, "Descrizione Avviso 3")
-            // Aggiungi altri avvisi se necessario
-        )
-    }
+
 
 
 

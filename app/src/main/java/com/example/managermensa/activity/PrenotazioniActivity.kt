@@ -61,7 +61,7 @@ class PrenotazioniActivity : AppCompatActivity() {
         binding = ActivityPrenotazioniBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel.getPrenotazioni(this,binding)
+        viewModel.getPrenotazioni(this)
 
         //Recupero email
         lifecycleScope.launch (Dispatchers.IO){
