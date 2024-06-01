@@ -654,19 +654,10 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
 
                                 // Supponiamo che avviso.get("data") restituisca un timestamp
                                 val timestamp = transizione_presa.get("data").asString  // Converti il timestamp in Long
+                                val timestampFormattato = timestamp.replace("GMT", "").replace(Regex("[a-zA-Z]+,"), "")
 
-                                // Creazione di un oggetto SimpleDateFormat per formattare la data
-                                val dateFormat = SimpleDateFormat("dd/MM/yyyy")
 
-                                // Creazione di un oggetto Date dal timestamp
-                                val date = Date(timestamp)
-
-                                // Formattazione della data nel formato desiderato
-                                val data_formattata = dateFormat.format(date)
-//
-//                                val data = avviso.get("data").asString
-
-                                transazioni_array.add(Transazione(email_,data_formattata,tipo,quantita))
+                                transazioni_array.add(Transazione(email_,timestampFormattato,tipo,quantita))
 
 
                             }
