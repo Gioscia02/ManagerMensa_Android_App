@@ -52,7 +52,12 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     private val _saldo = MutableLiveData<Float?>().apply { value = null }
     val saldo: LiveData<Float?> get() = _saldo
 
-    //Tutti le transazioni
+    //Flag se la transazione è andata a buon fine o no
+    private val _gettransazione = MutableLiveData<Boolean>().apply { value = null }
+    val gettransazione: LiveData<Boolean> get() = _gettransazione
+
+
+    //Tutte le transazioni
     private val _transazioni = MutableLiveData<List<Transazione>>().apply { value = null }
     val transazioni: LiveData<List<Transazione>> get() = _transazioni
 
@@ -550,7 +555,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     }
 
 
-    fun insertTransazione(binding: ActivityPortafoglioBinding, email: String?,  tipo: String, quantita: Int) {
+    fun insertTransazione(email: String?,  tipo: String, quantita: Int) {
         val gson = Gson()
         val string  =
             "{\"email\": \"$email\", \"tipo\": \"$tipo\", \"quantita\": \"$quantita\"}"
@@ -561,15 +566,25 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
                 if (response.isSuccessful) {
                     _success.value = true
 
-                    showToast(binding.root.context, "Transazione inviata")
+                    //Salvo che la transazione è andata a buon fine
+                    _gettransazione.postValue(true)
+
+                    Log.d("insertTransazione", "Transazione riuscita")
+
                     } else {
                         _success.value = false
-                        Log.e("insertTransazione", "Error in transazione")
+
+                    //Salvo che la transazione NON è andata a buon fine
+                    _gettransazione.postValue(false)
+
+                        Log.d("insertTransazione", "Errore nella transazione")
                     }
                 }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 _success.value = false
+                //Salvo che la transazione NON è andata a buon fine
+                _gettransazione.postValue(false)
                 Log.e("insertTransazione", "Failed to send transazione", t)
             }
         })
