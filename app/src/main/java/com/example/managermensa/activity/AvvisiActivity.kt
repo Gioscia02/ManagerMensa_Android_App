@@ -39,7 +39,6 @@ class AvvisiActivity : AppCompatActivity() {
 
         viewModel.avvisi.observe(this) { result ->
 
-
             if (result != null) {
                 adapter = AvvisiAdapter(result)
                 binding.recyclerView.layoutManager = LinearLayoutManager(this).apply {
@@ -48,10 +47,7 @@ class AvvisiActivity : AppCompatActivity() {
                 }
                 binding.recyclerView.adapter = adapter
 
-
-
             }
-
         }
 
         //prendo il riferimento alla toolbar
