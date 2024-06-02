@@ -160,7 +160,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     }
 
 
-    fun getPrezzi(binding: ActivityPortafoglioBinding,context : Context) {
+    fun getPrezzi(context : Context) {
         Client.retrofit.getPrezzi().enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {

@@ -10,7 +10,10 @@ import com.example.managermensa.databinding.ActivityAllergieBinding
 import com.example.managermensa.databinding.ActivityMenuBinding
 
 class MenuActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityMenuBinding
+
+//    private lateinit var adapter_primi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

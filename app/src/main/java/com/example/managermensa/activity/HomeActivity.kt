@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
+import com.example.managermensa.AcquistapastoActivity
 import com.example.managermensa.R
 import com.example.managermensa.databinding.ActivityHomeBinding
 
@@ -157,6 +158,21 @@ class HomeActivity : AppCompatActivity() {
             //Cambio Activity
             val intent = Intent(this, MenuActivity::class.java)
             startActivity(intent)
+
+        }
+
+        binding.buttonAcquista.setOnClickListener{
+
+            //Caricamento animazione al click del Button
+            val scaleAnimation = AnimationUtils.loadAnimation(this.binding.buttonAcquista.context,
+                R.anim.button_scale
+            )
+            binding.buttonAcquista.startAnimation(scaleAnimation)
+
+            //Cambio Activity
+            val intent = Intent(this, AcquistapastoActivity::class.java)
+            startActivity(intent)
+
 
         }
 
