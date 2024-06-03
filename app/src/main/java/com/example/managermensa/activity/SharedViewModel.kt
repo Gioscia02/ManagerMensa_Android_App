@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,10 +16,12 @@ import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.managermensa.activity.localdatabase.AppDatabase
+import com.example.managermensa.activity.localdatabase.LocalViewModel
 import com.example.managermensa.activity.localdatabase.Prezzi
 import com.example.managermensa.activity.localdatabase.User
 import com.example.managermensa.activity.retrofit.Client
 import com.example.managermensa.data.Avviso
+import com.example.managermensa.data.Pasto
 import com.example.managermensa.data.Transazione
 import com.example.managermensa.databinding.ActivityPortafoglioBinding
 import com.example.managermensa.databinding.ActivityPrenotazioniBinding
@@ -46,6 +49,10 @@ import java.util.Locale
 
 class SharedViewModel(application: Application) : AndroidViewModel(application) {
 
+
+    private val _pasti = MutableLiveData<List<Pasto>>().apply { value = null }
+    val pasti: LiveData<List<Pasto>> get() = _pasti
+
     private val _prezzi = MutableLiveData<Prezzi?>().apply { value = null }
     val prezzi: LiveData<Prezzi?> get() = _prezzi
 
@@ -60,6 +67,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     //Tutte le transazioni
     private val _transazioni = MutableLiveData<List<Transazione>>().apply { value = null }
     val transazioni: LiveData<List<Transazione>> get() = _transazioni
+
 
     //Nuovo Utente
     private val _user = MutableLiveData<User>().apply { value = null }
@@ -591,37 +599,32 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     }
 
 
-    fun getSaldo( email: String?) {
+    fun getSaldo(email: String?) {
         val gson = Gson()
-        val string  =
-            "{\"email\": \"$email\"}"
-
+        val string = "{\"email\": \"$email\"}"
         val json = gson.fromJson(string, JsonObject::class.java)
 
         Client.retrofit.getSaldo(email).enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     _success.value = true
-
                     val risposta: JsonObject? = response.body()
 
                     if (risposta != null) {
-
-                        //Prendo l'oggetto json saldo
-                        val saldoo = risposta.asJsonObject
-
-                        //Prendo il valore saldo_totale restituito dalla query
-                        val nuovo_saldo = risposta.get("saldo_totale").asFloat
-
-                        //Assegno al LiveData il nuovo Saldo calcolato dalla query
-                        _saldo.postValue(nuovo_saldo)
-
+                        if (risposta.has("saldo_totale")) {
+                            val saldo = risposta.get("saldo_totale").asFloat
+                            _saldo.postValue(saldo)
+                        } else {
+                            _success.value = false
+                            Log.e("getSaldo", "Response does not contain 'saldo_totale' field")
+                        }
                     } else {
                         _success.value = false
-                        Log.e("getSaldo", "Error in getSaldo")
+                        Log.e("getSaldo", "Response body is null")
                     }
                 }
             }
+
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 _success.value = false
                 Log.e("getSaldo", "Failed to getSaldo", t)
@@ -669,7 +672,8 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
 
                                 // Supponiamo che avviso.get("data") restituisca un timestamp
                                 val timestamp = transizione_presa.get("data").asString  // Converti il timestamp in Long
-                                val timestampFormattato = timestamp.replace("GMT", "").replace(Regex("[a-zA-Z]+,"), "")
+                                val timestampFormattato = timestamp
+//                                replace("GMT", "").replace(Regex("[a-zA-Z]+,"), "")
 
 
                                 transazioni_array.add(Transazione(email_,timestampFormattato,tipo,quantita))
@@ -695,6 +699,60 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
             }
         })
     }
+
+
+
+
+
+    fun getPasti() {
+        val gson = Gson()
+        val string  =
+            ""
+
+        val json = gson.fromJson(string, JsonObject::class.java)
+
+        Client.retrofit.getPasti().enqueue(object : Callback<JsonArray> {
+            override fun onResponse(call: Call<JsonArray>, response: Response<JsonArray>) {
+                if (response.isSuccessful) {
+                    _success.value = true
+
+                    val pasti_array_json: JsonArray? = response.body()
+                    var pasti_array =  mutableListOf<Pasto>()
+
+                    if(pasti_array_json!=null) {
+
+
+                        for (i in 0 until pasti_array_json.size()) {
+
+                            val pasto_preso = pasti_array_json[i].asJsonObject
+                            val nome =pasto_preso.get("nome").asString
+                            val allergieString = pasto_preso.get("allergie").asString
+                            val tipo =pasto_preso.get("tipo").asString
+
+                            val allergieArray = allergieString.split(", ").toList()
+
+                            pasti_array.add(Pasto(nome,tipo,allergieArray))
+                        }
+
+                        _pasti.postValue(pasti_array)
+
+                    }
+                    else {
+                        _success.value = false
+                        Log.e("getSaldo", "Error in getSaldo")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonArray>, t: Throwable) {
+                _success.value = false
+                Log.e("getSaldo", "Failed to getSaldo", t)
+            }
+        })
+    }
+
+
+
 
 
 

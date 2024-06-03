@@ -77,5 +77,10 @@ dependencies {
     implementation("androidx.room:room-runtime:$room_version")
     kapt("androidx.room:room-compiler:$room_version")
 
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.9.0")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1")
+    implementation ("androidx.room:room-runtime:2.3.0")
+    kapt ("androidx.room:room-compiler:2.3.0")
+
 
 }

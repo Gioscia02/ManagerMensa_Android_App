@@ -2,16 +2,24 @@ package com.example.managermensa.activity
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.managermensa.R
+import com.example.managermensa.adapter.AvvisiAdapter
+import com.example.managermensa.adapter.PastiAdapter
 import com.example.managermensa.databinding.ActivityAllergieBinding
 import com.example.managermensa.databinding.ActivityMenuBinding
 
 class MenuActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMenuBinding
+
+    val viewModel: SharedViewModel by viewModels()
+
+    private lateinit var adapter: PastiAdapter // Aggiungo l'adapter per la RecyclerView
 
 //    private lateinit var adapter_primi
 
@@ -30,6 +38,21 @@ class MenuActivity : AppCompatActivity() {
         toolbar.setNavigationOnClickListener {
 
             onBackPressed()
+
+        }
+
+        viewModel.getPasti()
+
+        viewModel.pasti.observe(this){pasto->
+
+            if(pasto!=null) {
+
+                adapter = PastiAdapter(pasto)
+                binding.recyclerView.layoutManager = LinearLayoutManager(this).apply {
+
+                }
+                binding.recyclerView.adapter = adapter
+            }
 
         }
 
