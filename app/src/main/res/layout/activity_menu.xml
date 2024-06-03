@@ -37,8 +37,138 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_lunedi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lunedi"
+                    android:background="@drawable/button"
+                    android:padding="15dp"
+                    android:layout_margin="5dp"
+                    />
+                <Button
+                    android:id="@+id/button_martedi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Martedi"
+                    android:background="@drawable/button"
+                    android:padding="15dp"
+                    android:layout_margin="5dp"/>
+                <Button
+                    android:id="@+id/button_mercoledi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Mercoledi"
+                    android:background="@drawable/button"
+                    android:padding="15dp"
+                    android:layout_margin="5dp"/>
+
+
+
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button_giovedi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Giovedi"
+                    android:background="@drawable/button"
+                    android:padding="15dp"
+                    android:layout_margin="5dp"/>
+
+                <Button
+                    android:id="@+id/button_venerdi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Venerdi"
+                    android:background="@drawable/button"
+                    android:padding="15dp"
+                    android:layout_margin="5dp"/>
+                <Button
+                    android:id="@+id/button_sabato"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Sabato"
+                    android:background="@drawable/button"
+                    android:padding="15dp"
+                    android:layout_margin="5dp"/>
+
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/button_domenica"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Domenica"
+                android:background="@drawable/button"
+                android:padding="15dp"
+                android:layout_margin="5dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Primi"
+                android:textColor="@color/black"
+                android:textSize="28dp"
+                android:textStyle="bold" />
+
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
+                android:id="@+id/recyclerViewPrimi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_pasto"
+                android:orientation="horizontal"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Secondi"
+                android:textColor="@color/black"
+                android:textSize="28dp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewSecondi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_pasto"
+                android:orientation="horizontal"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Contorni"
+                android:textColor="@color/black"
+                android:textSize="28dp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewContorni"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

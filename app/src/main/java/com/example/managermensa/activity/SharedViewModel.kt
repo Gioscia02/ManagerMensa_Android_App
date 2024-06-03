@@ -50,8 +50,15 @@ import java.util.Locale
 class SharedViewModel(application: Application) : AndroidViewModel(application) {
 
 
-    private val _pasti = MutableLiveData<List<Pasto>>().apply { value = null }
-    val pasti: LiveData<List<Pasto>> get() = _pasti
+    private val _pastiprimi = MutableLiveData<List<Pasto>>().apply { value = null }
+    val pastiprimi: LiveData<List<Pasto>> get() = _pastiprimi
+
+    private val _pastisecondi = MutableLiveData<List<Pasto>>().apply { value = null }
+    val pastisecondi: LiveData<List<Pasto>> get() = _pastisecondi
+
+
+    private val _pasticontorni = MutableLiveData<List<Pasto>>().apply { value = null }
+    val pasticontorni: LiveData<List<Pasto>> get() = _pasticontorni
 
     private val _prezzi = MutableLiveData<Prezzi?>().apply { value = null }
     val prezzi: LiveData<Prezzi?> get() = _prezzi
@@ -704,14 +711,12 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
 
 
 
-    fun getPasti() {
+    fun getPastiPrimi(giorno: String) {
         val gson = Gson()
-        val string  =
-            ""
-
+        val string  = ""
         val json = gson.fromJson(string, JsonObject::class.java)
 
-        Client.retrofit.getPasti().enqueue(object : Callback<JsonArray> {
+        Client.retrofit.getPastiPrimi(giorno).enqueue(object : Callback<JsonArray> {
             override fun onResponse(call: Call<JsonArray>, response: Response<JsonArray>) {
                 if (response.isSuccessful) {
                     _success.value = true
@@ -734,8 +739,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
                             pasti_array.add(Pasto(nome,tipo,allergieArray))
                         }
 
-                        _pasti.postValue(pasti_array)
-
+                        _pastiprimi.postValue(pasti_array)
                     }
                     else {
                         _success.value = false
@@ -752,7 +756,94 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
     }
 
 
+    fun getPastiSecondi(giorno: String) {
+        val gson = Gson()
+        val string  = ""
+        val json = gson.fromJson(string, JsonObject::class.java)
 
+        Client.retrofit.getPastiSecondi(giorno).enqueue(object : Callback<JsonArray> {
+            override fun onResponse(call: Call<JsonArray>, response: Response<JsonArray>) {
+                if (response.isSuccessful) {
+                    _success.value = true
+
+                    val pasti_array_json: JsonArray? = response.body()
+                    var pasti_array =  mutableListOf<Pasto>()
+
+                    if(pasti_array_json!=null) {
+
+
+                        for (i in 0 until pasti_array_json.size()) {
+
+                            val pasto_preso = pasti_array_json[i].asJsonObject
+                            val nome =pasto_preso.get("nome").asString
+                            val allergieString = pasto_preso.get("allergie").asString
+                            val tipo =pasto_preso.get("tipo").asString
+
+                            val allergieArray = allergieString.split(", ").toList()
+
+                            pasti_array.add(Pasto(nome,tipo,allergieArray))
+                        }
+
+                        _pastisecondi.postValue(pasti_array)
+                    }
+                    else {
+                        _success.value = false
+                        Log.e("getSaldo", "Error in getSaldo")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonArray>, t: Throwable) {
+                _success.value = false
+                Log.e("getSaldo", "Failed to getSaldo", t)
+            }
+        })
+    }
+
+
+    fun getPastiContorni(giorno: String) {
+        val gson = Gson()
+        val string  = ""
+        val json = gson.fromJson(string, JsonObject::class.java)
+
+        Client.retrofit.getPastiContorni(giorno).enqueue(object : Callback<JsonArray> {
+            override fun onResponse(call: Call<JsonArray>, response: Response<JsonArray>) {
+                if (response.isSuccessful) {
+                    _success.value = true
+
+                    val pasti_array_json: JsonArray? = response.body()
+                    var pasti_array =  mutableListOf<Pasto>()
+
+                    if(pasti_array_json!=null) {
+
+
+                        for (i in 0 until pasti_array_json.size()) {
+
+                            val pasto_preso = pasti_array_json[i].asJsonObject
+                            val nome =pasto_preso.get("nome").asString
+                            val allergieString = pasto_preso.get("allergie").asString
+                            val tipo =pasto_preso.get("tipo").asString
+
+                            val allergieArray = allergieString.split(", ").toList()
+
+                            pasti_array.add(Pasto(nome,tipo,allergieArray))
+                        }
+
+                        _pasticontorni.postValue(pasti_array)
+                    }
+                    else {
+                        _success.value = false
+                        Log.e("getSaldo", "Error in getSaldo")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<JsonArray>, t: Throwable) {
+                _success.value = false
+                Log.e("getSaldo", "Failed to getSaldo", t)
+            }
+        })
+    }
 
 
 

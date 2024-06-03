@@ -35,8 +35,15 @@ interface UserAPI {
 
 
 
-    @GET("$USER_URI/pasti")
-    fun getPasti(): Call<JsonArray>
+    @GET("$USER_URI/pastiprimi/{giorno}")
+    fun getPastiPrimi(@Path("giorno") giorno: String): Call<JsonArray>
+
+    @GET("$USER_URI/pastisecondi/{giorno}")
+    fun getPastiSecondi(@Path("giorno") giorno: String): Call<JsonArray>
+
+    @GET("$USER_URI/pasticontorni/{giorno}")
+    fun getPastiContorni(@Path("giorno") giorno: String): Call<JsonArray>
+
 
     @GET("$USER_URI/prenotazione")
     fun getPrenotazioni(): Call<JsonArray>
