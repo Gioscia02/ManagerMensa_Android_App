@@ -115,9 +115,7 @@ class LoginActivity : AppCompatActivity() {
                         showToast("Accesso effettuato")
 
                     }
-                    else {
-                        showToast("Accesso non riuscito")
-                    }
+
                 }
 
 

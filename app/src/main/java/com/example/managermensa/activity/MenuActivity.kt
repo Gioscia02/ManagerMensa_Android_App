@@ -8,12 +8,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.room.Room
 import com.example.managermensa.R
+import com.example.managermensa.activity.localdatabase.AppDatabase
 import com.example.managermensa.adapter.AvvisiAdapter
 import com.example.managermensa.adapter.PastiAdapter
+import com.example.managermensa.data.Allergia
 import com.example.managermensa.databinding.ActivityAllergieBinding
 import com.example.managermensa.databinding.ActivityMenuBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MenuActivity : AppCompatActivity() {
 
@@ -21,9 +28,10 @@ class MenuActivity : AppCompatActivity() {
 
     val viewModel: SharedViewModel by viewModels()
 
-    private lateinit var adapter: PastiAdapter // Aggiungo l'adapter per la RecyclerView
+    private lateinit var adapter: PastiAdapter
 
-//    private lateinit var adapter_primi
+    private lateinit var allergie_lista : List<Allergia>
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +50,27 @@ class MenuActivity : AppCompatActivity() {
             onBackPressed()
         }
 
+
+        lifecycleScope.launch (Dispatchers.IO) {
+            val db = Room.databaseBuilder(
+                applicationContext,
+                AppDatabase::class.java,
+                "MensaDatabase"
+            ).build()
+            val userDao = db.userDao()
+            val allergie = userDao.GetAllergie()
+
+            withContext(Dispatchers.Main) {
+
+                allergie_lista = allergie
+
+            }
+        }
+
+
+
+
+
         viewModel.getPastiPrimi("Lunedi")
         viewModel.getPastiSecondi("Lunedi")
         viewModel.getPastiContorni("Lunedi")
@@ -53,7 +82,7 @@ class MenuActivity : AppCompatActivity() {
 
             if(pasto!=null) {
 
-                adapter = PastiAdapter(pasto)
+                adapter = PastiAdapter(pasto,allergie_lista)
                 binding.recyclerViewPrimi.layoutManager = LinearLayoutManager(this).apply {
 
                 }
@@ -66,20 +95,19 @@ class MenuActivity : AppCompatActivity() {
 
             if(pasto!=null) {
 
-                adapter = PastiAdapter(pasto)
+                adapter = PastiAdapter(pasto,allergie_lista)
                 binding.recyclerViewSecondi.layoutManager = LinearLayoutManager(this).apply {
 
                 }
                 binding.recyclerViewSecondi.adapter = adapter
             }
-
         }
 
         viewModel.pasticontorni.observe(this){pasto->
 
             if(pasto!=null) {
 
-                adapter = PastiAdapter(pasto)
+                adapter = PastiAdapter(pasto,allergie_lista)
                 binding.recyclerViewContorni.layoutManager = LinearLayoutManager(this).apply {
 
                 }

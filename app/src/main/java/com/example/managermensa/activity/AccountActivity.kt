@@ -141,7 +141,6 @@ class AccountActivity : AppCompatActivity() {
             )
             binding.buttonVisualizzaProfilo.startAnimation(scaleAnimation)
 
-            showToast("Logout effettuato")
 
             //Torna alla schermata di accesso
             val intent = Intent(this, VisualizzaProfiloActivity::class.java)

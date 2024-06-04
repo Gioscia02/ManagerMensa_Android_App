@@ -105,9 +105,7 @@ class RegistrazioneActivity : AppCompatActivity() {
             showDatePickerDialog(this)
         }
 
-        binding.buttonFotoSelezionata.setOnClickListener {
-            openGalleryForImage()
-        }
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())

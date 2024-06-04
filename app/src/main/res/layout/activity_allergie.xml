@@ -50,8 +50,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
+
             <CheckBox
-                android:id="@+id/allergy_gluten"
+                android:id="@+id/allergia_glutine"
                 style="@style/CustomCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -59,7 +60,7 @@
                 android:text="Glutine" />
 
             <CheckBox
-                android:id="@+id/allergy_milk"
+                android:id="@+id/allergia_latte"
                 style="@style/CustomCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -67,7 +68,7 @@
                 android:text="Latte" />
 
             <CheckBox
-                android:id="@+id/allergy_eggs"
+                android:id="@+id/allergia_uova"
                 style="@style/CustomCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -75,12 +76,21 @@
                 android:text="Uova" />
 
             <CheckBox
-                android:id="@+id/allergy_gluten1"
+                android:id="@+id/allergia_soia"
                 style="@style/CustomCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:text="Soia" />
+
+            <Button
+                android:id="@+id/button_salva_allergie"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Salva"
+                android:background="@drawable/button"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/green"/>
 
 
         </LinearLayout>

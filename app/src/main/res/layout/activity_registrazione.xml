@@ -90,15 +90,6 @@
                 android:inputType="textPassword"
                 android:padding="12dp" />
 
-            <Button
-                android:id="@+id/buttonFotoSelezionata"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/button"
-                android:padding="20dp"
-                android:text="Seleziona foto" />
-
             <ImageView
                 android:id="@+id/imageViewPhoto"
                 android:layout_width="120dp"
