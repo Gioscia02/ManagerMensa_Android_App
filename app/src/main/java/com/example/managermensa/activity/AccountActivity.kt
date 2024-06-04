@@ -133,6 +133,26 @@ class AccountActivity : AppCompatActivity() {
 
         }
 
+        binding.buttonVisualizzaProfilo.setOnClickListener{
+
+            //Caricamento animazione al click del Button
+            val scaleAnimation = AnimationUtils.loadAnimation(this.binding.buttonVisualizzaProfilo.context,
+                R.anim.button_scale
+            )
+            binding.buttonVisualizzaProfilo.startAnimation(scaleAnimation)
+
+            showToast("Logout effettuato")
+
+            //Torna alla schermata di accesso
+            val intent = Intent(this, VisualizzaProfiloActivity::class.java)
+
+            startActivity(intent)
+
+
+
+
+        }
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())

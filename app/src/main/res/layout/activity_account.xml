@@ -100,6 +100,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
+                    android:id="@+id/buttonVisualizzaProfilo"
                     android:layout_width="171dp"
                     android:layout_height="125dp"
                     android:layout_margin="10dp"
@@ -119,7 +120,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:gravity="center_vertical"
-                        android:text="Cambia immagine di profilo"
+                        android:text="Visualizza profilo"
                         android:textColor="@color/black"
                         android:textSize="16dp" />
                 </LinearLayout>

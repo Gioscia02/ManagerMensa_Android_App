@@ -679,8 +679,8 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
 
                                 // Supponiamo che avviso.get("data") restituisca un timestamp
                                 val timestamp = transizione_presa.get("data").asString  // Converti il timestamp in Long
-                                val timestampFormattato = timestamp
-//                                replace("GMT", "").replace(Regex("[a-zA-Z]+,"), "")
+                                val timestampFormattato = timestamp.replace("GMT", "").replace(Regex("[a-zA-Z]+,"), "")
+
 
 
                                 transazioni_array.add(Transazione(email_,timestampFormattato,tipo,quantita))
