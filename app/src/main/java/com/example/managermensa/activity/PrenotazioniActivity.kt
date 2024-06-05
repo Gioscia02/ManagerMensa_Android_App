@@ -166,7 +166,6 @@ class PrenotazioniActivity : AppCompatActivity() {
         viewModel.prenotazione.observe(this) { result ->
             if (result != null) {
                 prenotazioneResult = result
-                checkResults()
             }
         }
 
@@ -176,7 +175,6 @@ class PrenotazioniActivity : AppCompatActivity() {
                 binding.textPrenotazioniOggi.text = result2
                 orarioPrenotazioneResult = result2
                 Log.d("ORARIOO", result2.toString())
-                checkResults()
             }
         }
 
@@ -225,25 +223,6 @@ class PrenotazioniActivity : AppCompatActivity() {
     }
 
 
-    //Funzione che verificando che l'invio di prenotazione è andato a buon fine e che ci sia un orario per poi comunicare all'utente il risultato
-    fun checkResults() {
-//        if (prenotazioneResult != null && orarioPrenotazioneResult != null) {
-//            // Entrambi i risultati sono disponibili, esegui il blocco di codice
-//            val result = prenotazioneResult
-//            val result2 = orarioPrenotazioneResult
-//
-//            // Pulizia campo
-//            binding.selectedTimeTextViewPranzo.text = ""
-//            binding.selectedTimeTextViewCena.text = ""
-//
-//            // Imposta l'orario della prenotazione nella TextView
-//            binding.textPrenotazioniOggi.text =
-//                "${binding.textPrenotazioniOggi.text}    $result2"
-//        }
-//        else{
-//            showToast("Non è possibile prenotare")
-//        }
-    }
 
 
 
@@ -252,8 +231,12 @@ class PrenotazioniActivity : AppCompatActivity() {
         val intent = Intent(applicationContext, NotificationReceiver::class.java).apply {
             action = "com.example.managermensa.NOTIFICATION"
         }
-        val title = "Notifica per la prenotazione impostata per:"
-        intent.putExtra("titleExtra", title)
+
+        val title = "Promemoria prenotazione:"
+        val message = "$ora:$minuti "
+            intent.putExtra("titleExtra", title)
+        intent.putExtra("messageExtra", message)
+
 
         val pendingIntent = PendingIntent.getBroadcast(
             applicationContext,
@@ -272,6 +255,8 @@ class PrenotazioniActivity : AppCompatActivity() {
         if (calendar.timeInMillis < System.currentTimeMillis()) {
             calendar.add(Calendar.DAY_OF_YEAR, 1)
         }
+
+
 
         try {
             alarmManager.setExactAndAllowWhileIdle(
