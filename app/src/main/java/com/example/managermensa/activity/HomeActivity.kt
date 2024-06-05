@@ -7,8 +7,6 @@ import android.view.animation.AnimationUtils
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
-import com.example.managermensa.AcquistapastoActivity
 import com.example.managermensa.R
 import com.example.managermensa.databinding.ActivityHomeBinding
 
@@ -20,27 +18,11 @@ class HomeActivity : AppCompatActivity() {
     val viewModel : SharedViewModel by viewModels()
 
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState);
 
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        viewModel.getUltimoavviso()
-
-        viewModel.ultimoavviso.observe(this){result->
-
-            if(result!=null) {
-
-                binding.ultimoAvvisoTitle.text = result.titolo
-                binding.ultimoAvvisoDate.text = result.data
-                binding.ultimoAvvisoDescription.text = result.testo
-
-
-            }
-
-        }
 
         enableEdgeToEdge()
 
@@ -179,6 +161,26 @@ class HomeActivity : AppCompatActivity() {
 
 
         }
+
+
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.getUltimoavviso()
+
+        viewModel.ultimoavviso.observe(this){result->
+
+            if(result!=null) {
+
+                binding.ultimoAvvisoTitle.text = result.titolo
+                binding.ultimoAvvisoDate.text = result.data
+                binding.ultimoAvvisoDescription.text = result.testo
+
+
+            }
+
+        }
+    }
 
     //Per evitare di tornare nella schermata di accesso
     override fun onBackPressed() {

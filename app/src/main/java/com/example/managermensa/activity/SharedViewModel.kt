@@ -273,25 +273,28 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
                             ).build()
                             val userDao = db.userDao()
 
+
                             // Seleziona l'utente dal database
                             val user_ = userDao.SelectUsers()
-                            val email_ = user_.email
+                            if (user != null) {
+                                val email_ = user_.email
 
-                            // Itera su ogni elemento della JsonArray per prendere i dati che abbiamoo richiesto
-                            for (i in 0 until prenotazioni.size()) {
-                                val prenotazione = prenotazioni[i].asJsonObject
-                                val orario = prenotazione.get("orario")?.asString
-                                val giorno = prenotazione.get("giorno")?.asString
-                                val email = prenotazione.get("email")?.asString
+                                // Itera su ogni elemento della JsonArray per prendere i dati che abbiamoo richiesto
+                                for (i in 0 until prenotazioni.size()) {
+                                    val prenotazione = prenotazioni[i].asJsonObject
+                                    val orario = prenotazione.get("orario")?.asString
+                                    val giorno = prenotazione.get("giorno")?.asString
+                                    val email = prenotazione.get("email")?.asString
 
-                                if (orario != null && giorno == oggi.toString() && email_ == email) {
-                                    // Aggiungi l'orario alla lista degli orari delle prenotazioni
-                                    orariPrenotazioni.add(orario)
+                                    if (orario != null && giorno == oggi.toString() && email_ == email) {
+                                        // Aggiungi l'orario alla lista degli orari delle prenotazioni
+                                        orariPrenotazioni.add(orario)
+                                    }
                                 }
-                            }
 
-                            //Memorizzo gli orari delle prenotazioni di oggi, comverto da mutablelist a string usando joinToString
-                            _orarioprenotazione.postValue(orariPrenotazioni.joinToString(", "))
+                                //Memorizzo gli orari delle prenotazioni di oggi, comverto da mutablelist a string usando joinToString
+                                _orarioprenotazione.postValue(orariPrenotazioni.joinToString(", "))
+                            }
                         }
                     }
                 } else {

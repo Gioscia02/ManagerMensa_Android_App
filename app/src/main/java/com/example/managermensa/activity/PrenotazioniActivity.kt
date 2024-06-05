@@ -1,6 +1,11 @@
 package com.example.managermensa.activity
 
+import android.app.AlarmManager
+import android.app.AlertDialog
+import android.app.PendingIntent
 import android.app.TimePickerDialog
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.animation.AnimationUtils
@@ -12,6 +17,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
+import com.example.managermensa.NotificationReceiver
 import com.example.managermensa.R
 import com.example.managermensa.activity.localdatabase.AppDatabase
 import com.example.managermensa.data.Utente
@@ -23,6 +29,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.*
 import java.time.LocalTime
+import java.util.Calendar
+import java.util.Date
 
 class PrenotazioniActivity : AppCompatActivity() {
 
@@ -113,6 +121,7 @@ class PrenotazioniActivity : AppCompatActivity() {
 
                     //Invio prenotazione
                     viewModel.insertPrenotazione(selectedTimePranzo.toString(), email_, pasto)
+                    scheduleNotification(11,30)
 
                 } else {
                     showToast("Seleziona un orario per il pranzo prima di prenotare")
@@ -140,6 +149,8 @@ class PrenotazioniActivity : AppCompatActivity() {
 
                     //Invio prenotazione
                     viewModel.insertPrenotazione(selectedTimeCena.toString(), email_, pasto)
+                    scheduleNotification(18,30)
+
 
                 } else {
                     showToast("Seleziona un orario per la cena prima di prenotare")
@@ -234,6 +245,67 @@ class PrenotazioniActivity : AppCompatActivity() {
 //        }
     }
 
+
+
+
+    private fun scheduleNotification(ora:Int,minuti:Int) {
+        val intent = Intent(applicationContext, NotificationReceiver::class.java).apply {
+            action = "com.example.managermensa.NOTIFICATION"
+        }
+        val title = "Notifica per la prenotazione impostata per:"
+        intent.putExtra("titleExtra", title)
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            applicationContext,
+            notificationID,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        Log.d("ORARIOOOOOOOOO", orarioPrenotazioneResult.toString())
+        val calendar = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, ora)
+            set(Calendar.MINUTE, minuti)
+        }
+
+        if (calendar.timeInMillis < System.currentTimeMillis()) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
+        }
+
+        try {
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                calendar.timeInMillis,
+                pendingIntent
+            )
+            showAlert(calendar.timeInMillis, title)
+        } catch (e: SecurityException) {
+            showPermissionDeniedDialog("Exact alarm permission is required for this feature.")
+        }
+    }
+
+    private fun showPermissionDeniedDialog(message: String) {
+        AlertDialog.Builder(this)
+            .setTitle("Permission Denied")
+            .setMessage(message)
+            .setPositiveButton("Okay") { _, _ -> }
+            .show()
+    }
+
+    private fun showAlert(time: Long, title: String) {
+        val date = Date(time)
+        val dateFormat = android.text.format.DateFormat.getLongDateFormat(applicationContext)
+        val timeFormat = android.text.format.DateFormat.getTimeFormat(applicationContext)
+
+        AlertDialog.Builder(this)
+            .setTitle("Prenotazione effettuata")
+            .setMessage(
+                "$title\n${dateFormat.format(date)} ${timeFormat.format(date)}"
+            )
+            .setPositiveButton("Okay") { _, _ -> }
+            .show()
+    }
 
     private fun parseJsonToModel(jsonString: JsonArray): ArrayList<Utente> {
         val gson = GsonBuilder().setDateFormat("yyyy-MM-dd").create()
