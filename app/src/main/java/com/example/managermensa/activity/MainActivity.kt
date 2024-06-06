@@ -36,7 +36,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    var orario: String =""
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -44,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         if (isGranted) {
             checkExactAlarmPermissionAndSchedule()
         } else {
-            showPermissionDeniedDialog("Notification permission is required for this feature.")
+            showPermissionDeniedDialog("Il permesso di notifiche è necessario")
         }
     }
 
@@ -60,11 +59,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         createNotificationChannel()
-
-
-
-
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
@@ -134,33 +128,18 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
                 requestScheduleExactAlarmPermission.launch(intent)
             } else {
-//                scheduleNotification()
             }
         } else {
-//            scheduleNotification()
         }
     }
 
 
 
-    private fun showAlert(time: Long, title: String, message: String) {
-        val date = Date(time)
-        val dateFormat = android.text.format.DateFormat.getLongDateFormat(applicationContext)
-        val timeFormat = android.text.format.DateFormat.getTimeFormat(applicationContext)
-
-        AlertDialog.Builder(this)
-            .setTitle("Notification Scheduled")
-            .setMessage(
-                "Title: $title\nMessage: $message\nAt: ${dateFormat.format(date)} ${timeFormat.format(date)}"
-            )
-            .setPositiveButton("Okay") { _, _ -> }
-            .show()
-    }
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Daily Notification"
-            val descriptionText = "Channel for daily notifications"
+            val name = "Notifica prenotazione"
+            val descriptionText = "Canale per notifiche per prenotazioni"
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(channelID, name, importance).apply {
                 description = descriptionText
@@ -173,9 +152,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun showPermissionDeniedDialog(message: String) {
         AlertDialog.Builder(this)
-            .setTitle("Permission Denied")
+            .setTitle("Permesso rifiutato")
             .setMessage(message)
-            .setPositiveButton("Okay") { _, _ -> }
+            .setPositiveButton("ok") { _, _ -> }
             .show()
     }
 }

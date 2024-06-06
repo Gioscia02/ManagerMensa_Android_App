@@ -68,29 +68,13 @@ class RegistrazioneActivity : AppCompatActivity() {
                                 ).build()
                                 val userDao = db.userDao()
 
-
                                 //Inserisco il nuovo utente localmente
                                 val user_ = userDao.InsertUser(result)
-
-
-//                            if (user_ != null) {
-//                                // Inserisco nei campi i dati attuali dell'utente
-//                                withContext(Dispatchers.Main) {
-//                                    editTextNome.setText(user_.nome)
-//                                    editTextCognome.setText(user_.cognome)
-//                                    editTextEmail.setText(user_.email)
-//                                    editTextNascita.setText(user_.nascita)
-//                                    editTextPassword.setText(user_.password)
-//                                }
-//                            }
                             }
-
                             // Memorizza l'account loggato localmente
-//                            SecurePreferencesManager.saveUser(context, user)
                             val intent = Intent(this, HomeActivity::class.java)
                             startActivity(intent)
                         }
-
                     }
 
                 } else {

@@ -31,6 +31,7 @@ import okhttp3.*
 import java.time.LocalTime
 import java.util.Calendar
 import java.util.Date
+import kotlin.time.Duration.Companion.minutes
 
 class PrenotazioniActivity : AppCompatActivity() {
 
@@ -122,12 +123,19 @@ class PrenotazioniActivity : AppCompatActivity() {
 
             //Controllo se l'orario corrente è accettabile per effettuare la prenotazione
             if (now.isAfter(LocalTime.of(0, 0)) ) {
-                if (selectedTimePranzo != null) {
+
+                val Prenotazione_: LocalTime? = selectedTimePranzo
+                if (Prenotazione_ != null) {
 
                     //Invio prenotazione
                     viewModel.insertPrenotazione(selectedTimePranzo.toString(), email_, pasto)
-                    oraPrenotazione=11
-                    minutoPrenotazione=30
+
+
+                    oraPrenotazione = Prenotazione_.hour
+                    minutoPrenotazione = Prenotazione_.minute
+
+                    Log.d("ORARIOPRENOTA", "Ora Prenotazione: $oraPrenotazione")
+                    Log.d("MINUTOPRENOTA", "Minuto Prenotazione: $minutoPrenotazione")
 
                 } else {
                     showToast("Seleziona un orario per il pranzo prima di prenotare")
@@ -153,13 +161,14 @@ class PrenotazioniActivity : AppCompatActivity() {
 
             //Controllo se l'orario corrente è accettabile per effettuare la prenotazione
             if (now.isAfter(LocalTime.of(0, 0)) ) {
-                if (selectedTimeCena != null) {
+                val Prenotazione_: LocalTime? = selectedTimeCena
+                if (Prenotazione_ != null) {
 
                     //Invio prenotazione
                     viewModel.insertPrenotazione(selectedTimeCena.toString(), email_, pasto)
 
-                    oraPrenotazione=18
-                    minutoPrenotazione=30
+                    oraPrenotazione = Prenotazione_.hour
+                    minutoPrenotazione = Prenotazione_.minute
 
                 } else {
                     showToast("Seleziona un orario per la cena prima di prenotare")
@@ -175,10 +184,7 @@ class PrenotazioniActivity : AppCompatActivity() {
         viewModel.prenotazione.observe(this) { result ->
             if (result != null) {
                 prenotazioneResult = result
-
-                //Chiama la funzione per notificare la avvenuta prenotazione e il promemoria impostato
-                scheduleNotification(oraPrenotazione,minutoPrenotazione)
-
+                
             }
         }
 
@@ -187,6 +193,9 @@ class PrenotazioniActivity : AppCompatActivity() {
             if (result2 != null) {
                 binding.textPrenotazioniOggi.text = result2
                 orarioPrenotazioneResult = result2
+
+                //Chiama la funzione per notificare la avvenuta prenotazione e il promemoria impostato
+                scheduleNotification(result2,oraPrenotazione,minutoPrenotazione)
 
             }
         }
@@ -237,15 +246,15 @@ class PrenotazioniActivity : AppCompatActivity() {
 
 
     //Viene schedulata la notifica per la prenotazione
-    private fun scheduleNotification(ora:Int,minuti:Int) {
+    private fun scheduleNotification(oraPrenotazione:String,ora:Int,minuto:Int) {
         val intent = Intent(applicationContext, NotificationReceiver::class.java).apply {
             action = "com.example.managermensa.NOTIFICATION"
         }
 
         val title = "Promemoria prenotazione:"
-        val message = "$ora:$minuti "
+        val message = "$oraPrenotazione"
         intent.putExtra("titleExtra", title)
-        intent.putExtra("messageExtra", "11:30")
+        intent.putExtra("messageExtra", message)
 
 
         val pendingIntent = PendingIntent.getBroadcast(
@@ -259,7 +268,7 @@ class PrenotazioniActivity : AppCompatActivity() {
         Log.d("ORARIOOOOOOOOO", orarioPrenotazioneResult.toString())
         val calendar = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, ora)
-            set(Calendar.MINUTE, minuti)
+            set(Calendar.MINUTE, minuto)
         }
 
         if (calendar.timeInMillis < System.currentTimeMillis()) {
