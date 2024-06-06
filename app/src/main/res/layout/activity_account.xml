@@ -60,11 +60,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:gravity="center_vertical"
                         android:text="Portafoglio"
                         android:textColor="@color/black"
                         android:textSize="16dp"
-                        android:fontFamily="sans-serif"
-                        android:gravity="center_vertical"/>
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -84,13 +85,14 @@
                         android:src="@drawable/modifica_credenziali_icon" />
 
                     <TextView
-                        android:layout_width="78dp"
+                        android:layout_width="86dp"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
                         android:gravity="center_vertical"
                         android:text="Modifica credenziali"
                         android:textColor="@color/black"
-                        android:textSize="16dp" />
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -122,7 +124,8 @@
                         android:gravity="center_vertical"
                         android:text="Visualizza profilo"
                         android:textColor="@color/black"
-                        android:textSize="16dp" />
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -144,11 +147,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:gravity="center_vertical"
                         android:text="Storico spese"
                         android:textColor="@color/black"
                         android:textSize="16dp"
-                        android:fontFamily="sans-serif"
-                        android:gravity="center_vertical"/>
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -176,12 +180,13 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:gravity="center_vertical"
                         android:text="Logout"
+                        android:textAllCaps="true"
                         android:textColor="#dc143c"
                         android:textSize="16dp"
-                        android:textAllCaps="true"
-                        android:fontFamily="sans-serif"
-                        android:gravity="center_vertical"/>
+                        android:textStyle="bold" />
                 </LinearLayout>
 
             </LinearLayout>

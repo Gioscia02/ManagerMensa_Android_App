@@ -245,7 +245,7 @@ class PrenotazioniActivity : AppCompatActivity() {
         val title = "Promemoria prenotazione:"
         val message = "$ora:$minuti "
         intent.putExtra("titleExtra", title)
-        intent.putExtra("messageExtra", message)
+        intent.putExtra("messageExtra", "11:30")
 
 
         val pendingIntent = PendingIntent.getBroadcast(

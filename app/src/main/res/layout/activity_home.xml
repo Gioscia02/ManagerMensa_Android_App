@@ -122,7 +122,8 @@
                         android:fontFamily="sans-serif"
                         android:text="Acquista pasto"
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -156,7 +157,8 @@
                         android:fontFamily="sans-serif"
                         android:text="Menu"
                         android:textColor="@color/black"
-                        android:textSize="16dp" />
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -184,7 +186,8 @@
                         android:fontFamily="sans-serif"
                         android:text="Prenotazioni"
                         android:textColor="@color/black"
-                        android:textSize="16dp" />
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
 
@@ -220,7 +223,8 @@
                         android:fontFamily="sans-serif"
                         android:text="Allergie e intolleranze"
                         android:textColor="@color/black"
-                        android:textSize="16dp" />
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
 
@@ -246,10 +250,11 @@
                         android:id="@+id/text_comunicazioni"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
                         android:text="Avvisi"
                         android:textColor="@color/black"
                         android:textSize="16dp"
-                        android:fontFamily="sans-serif" />
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -280,10 +285,11 @@
                         android:id="@+id/text_info_mensa"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
                         android:text="Info mensa"
                         android:textColor="@color/black"
                         android:textSize="16dp"
-                        android:fontFamily="sans-serif" />
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -311,7 +317,8 @@
                         android:fontFamily="sans-serif"
                         android:text="Segnalazioni e lamentele"
                         android:textColor="@color/black"
-                        android:textSize="16dp" />
+                        android:textSize="16dp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
             </LinearLayout>
