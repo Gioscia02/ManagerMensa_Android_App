@@ -124,12 +124,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-//    fun removeItem(item: Utente) {
-//        _itemList.value?.apply {
-//            remove(item)
-//            _itemList.postValue(this)
-//        }
-//    }
+
 
     fun getUtente(email: String, password: String) {
         Client.retrofit.findUtente(email, password).enqueue(object : Callback<JsonObject> {
@@ -193,29 +188,11 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
                         val prezzo_contorno = risposta.get("prezzo_contorno")?.asFloat
 
                         val prezzo = Prezzi( prezzo_pranzo_completo= prezzo_pranzo_completo, prezzo_primo = prezzo_primo, prezzo_secondo = prezzo_secondo, prezzo_contorno = prezzo_contorno, prezzo_cena_completa = prezzo_cena_completa, id = 1)
-//
+
                         Log.d("PREZOOOOOO", prezzo_primo.toString())
 
                         //Assegno il prezzo al LiveData
                         _prezzi.postValue(prezzo)
-
-//
-//
-////                            if(prezziDao.Count()==0 || prezziDao.Uguali(prezzo_pranzo_completo,prezzo_cena_completa,prezzo_primo,prezzo_secondo,prezzo_contorno)== null) {
-////
-////                                Log.d("entrato", "SIIIIIIIIIIIIIIIIIIIII ")
-////                                prezziDao.deleteAllPrezzi()
-////                                prezziDao.InsertPrezzi(prezzi_db_remoto)
-////
-////                            }
-//                            //Controllo se l'utente è già presente nel Database locale
-//                            val prezzi = prezziDao.GetPrezzi()
-//                            withContext(Dispatchers.Main) {
-//                                // Torna al thread principale per aggiornare le viste UI
-//
-//
-//                            }
-//                        }
 
 
 
@@ -319,7 +296,7 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
                 if (response.isSuccessful) {
                     val avvisi: JsonArray? = response.body()
                     if (avvisi != null) {
-                        //Lista per contenere gli ultimi 3 avvisi
+                        //Lista per contenere gli ultimi  avvisi
                         val avvisi_lista = mutableListOf<Avviso>()
 
                         GlobalScope.launch(Dispatchers.IO) {
@@ -352,8 +329,6 @@ class SharedViewModel(application: Application) : AndroidViewModel(application) 
 
                                 // Formattazione della data nel formato desiderato
                                 val data_formattata = dateFormat.format(date)
-//
-//                                val data = avviso.get("data").asString
 
                                 avvisi_lista.add(Avviso(titolo,data_formattata,testo))
 

@@ -35,20 +35,26 @@ import java.util.Date
 class PrenotazioniActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPrenotazioniBinding
-    private val client = OkHttpClient()
 
+    //Orario per le prenotazioni selezionate tramite i pulsanti
     private var selectedTimePranzo: LocalTime? = null
     private var selectedTimeCena: LocalTime? = null
 
     val viewModel : SharedViewModel by viewModels()
 
+    //Può essere 'Pranzo' o 'Cena' e verra' passato all'insertPrenotazione
     var pasto: String = ""
 
 
+    //Viene salvata la mail dell'utente da passare all'insertPRenotazione
     var email_ = ""
 
     var prenotazioneResult: Boolean? = null
     var orarioPrenotazioneResult: String? = null
+
+    //Orario e minuto scelti per la prenotazione da effettuare
+    var oraPrenotazione:Int =0
+    var minutoPrenotazione:Int =0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,7 +83,6 @@ class PrenotazioniActivity : AppCompatActivity() {
 
         }
 
-//        val dbManager = UserDatabaseManager(this)
 
 
         val toolbar = binding.toolbarPrenotazioni
@@ -115,13 +120,14 @@ class PrenotazioniActivity : AppCompatActivity() {
 
             val now = LocalTime.now()
 
-
+            //Controllo se l'orario corrente è accettabile per effettuare la prenotazione
             if (now.isAfter(LocalTime.of(0, 0)) ) {
                 if (selectedTimePranzo != null) {
 
                     //Invio prenotazione
                     viewModel.insertPrenotazione(selectedTimePranzo.toString(), email_, pasto)
-                    scheduleNotification(11,30)
+                    oraPrenotazione=11
+                    minutoPrenotazione=30
 
                 } else {
                     showToast("Seleziona un orario per il pranzo prima di prenotare")
@@ -144,13 +150,16 @@ class PrenotazioniActivity : AppCompatActivity() {
             binding.buttonPrenotaCena.startAnimation(scaleAnimation)
 
             val now = LocalTime.now()
+
+            //Controllo se l'orario corrente è accettabile per effettuare la prenotazione
             if (now.isAfter(LocalTime.of(0, 0)) ) {
                 if (selectedTimeCena != null) {
 
                     //Invio prenotazione
                     viewModel.insertPrenotazione(selectedTimeCena.toString(), email_, pasto)
-                    scheduleNotification(18,30)
 
+                    oraPrenotazione=18
+                    minutoPrenotazione=30
 
                 } else {
                     showToast("Seleziona un orario per la cena prima di prenotare")
@@ -166,6 +175,10 @@ class PrenotazioniActivity : AppCompatActivity() {
         viewModel.prenotazione.observe(this) { result ->
             if (result != null) {
                 prenotazioneResult = result
+
+                //Chiama la funzione per notificare la avvenuta prenotazione e il promemoria impostato
+                scheduleNotification(oraPrenotazione,minutoPrenotazione)
+
             }
         }
 
@@ -174,12 +187,9 @@ class PrenotazioniActivity : AppCompatActivity() {
             if (result2 != null) {
                 binding.textPrenotazioniOggi.text = result2
                 orarioPrenotazioneResult = result2
-                Log.d("ORARIOO", result2.toString())
+
             }
         }
-
-
-
 
 
 
@@ -190,6 +200,8 @@ class PrenotazioniActivity : AppCompatActivity() {
         }
     }
 
+
+    //funzione chiamata per la selezione dell'orario della prenotazione
     private fun showTimePickerDialog(isPranzo: Boolean) {
         val currentTime = LocalTime.now()
         val timePickerDialog = TimePickerDialog(
@@ -224,9 +236,7 @@ class PrenotazioniActivity : AppCompatActivity() {
 
 
 
-
-
-
+    //Viene schedulata la notifica per la prenotazione
     private fun scheduleNotification(ora:Int,minuti:Int) {
         val intent = Intent(applicationContext, NotificationReceiver::class.java).apply {
             action = "com.example.managermensa.NOTIFICATION"
@@ -234,7 +244,7 @@ class PrenotazioniActivity : AppCompatActivity() {
 
         val title = "Promemoria prenotazione:"
         val message = "$ora:$minuti "
-            intent.putExtra("titleExtra", title)
+        intent.putExtra("titleExtra", title)
         intent.putExtra("messageExtra", message)
 
 
@@ -278,6 +288,8 @@ class PrenotazioniActivity : AppCompatActivity() {
             .show()
     }
 
+
+    //Viene mostrato l'allert per la avvenuta prenotazione e per il promemoria impostato
     private fun showAlert(time: Long, title: String) {
         val date = Date(time)
         val dateFormat = android.text.format.DateFormat.getLongDateFormat(applicationContext)
@@ -292,10 +304,7 @@ class PrenotazioniActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun parseJsonToModel(jsonString: JsonArray): ArrayList<Utente> {
-        val gson = GsonBuilder().setDateFormat("yyyy-MM-dd").create()
-        return gson.fromJson(jsonString, object : TypeToken<ArrayList<Utente>>() {}.type)
-    }
+
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
