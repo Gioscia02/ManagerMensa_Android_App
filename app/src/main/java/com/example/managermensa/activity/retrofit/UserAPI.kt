@@ -70,10 +70,6 @@ interface UserAPI {
 
 
 
-
-
-
-
     @GET("$USER_URI/{email}/{password}")
     fun findUtente(@Path("email") email: String,@Path("password") password: String): Call<JsonObject>
 
@@ -81,7 +77,7 @@ interface UserAPI {
 
 
     companion object {
-        const val BASE_URL = "http://192.168.116.242:9000/"
+        const val BASE_URL = "http://192.168.1.219:9000/"
         const val USER_URI = "pwm/utenti"
 
     }

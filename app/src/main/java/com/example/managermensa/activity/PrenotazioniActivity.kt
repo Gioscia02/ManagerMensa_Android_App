@@ -167,6 +167,7 @@ class PrenotazioniActivity : AppCompatActivity() {
                     //Invio prenotazione
                     viewModel.insertPrenotazione(selectedTimeCena.toString(), email_, pasto)
 
+                    //Mi salvo l'orario della prenotazione per altre operazioni in altre funzioni di questa activity
                     oraPrenotazione = Prenotazione_.hour
                     minutoPrenotazione = Prenotazione_.minute
 
@@ -184,18 +185,19 @@ class PrenotazioniActivity : AppCompatActivity() {
         viewModel.prenotazione.observe(this) { result ->
             if (result != null) {
                 prenotazioneResult = result
-                
+
+                //Chiama la funzione per notificare la avvenuta prenotazione e il promemoria impostato
+                scheduleNotification("$oraPrenotazione:$minutoPrenotazione",oraPrenotazione,minutoPrenotazione)
             }
         }
 
-        //Osservo l'orario della prenotazione effettuata
+        //Osservo l'orario delle prenotazione effettuate e aggiorno la Gui
         viewModel.orarioprenotazione.observe(this) { result2 ->
             if (result2 != null) {
                 binding.textPrenotazioniOggi.text = result2
                 orarioPrenotazioneResult = result2
 
-                //Chiama la funzione per notificare la avvenuta prenotazione e il promemoria impostato
-                scheduleNotification(result2,oraPrenotazione,minutoPrenotazione)
+
 
             }
         }
@@ -267,8 +269,18 @@ class PrenotazioniActivity : AppCompatActivity() {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         Log.d("ORARIOOOOOOOOO", orarioPrenotazioneResult.toString())
         val calendar = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, ora)
-            set(Calendar.MINUTE, minuto)
+
+            //Promemoria per prima dell'ora di pranzo
+            if(ora <15) {
+                set(Calendar.HOUR_OF_DAY, 11)
+                set(Calendar.MINUTE, 30)
+            }
+
+            //Promemoria per prima dell'ora di cena
+            else{
+                set(Calendar.HOUR_OF_DAY, 18)
+                set(Calendar.MINUTE, 30)
+            }
         }
 
         if (calendar.timeInMillis < System.currentTimeMillis()) {
