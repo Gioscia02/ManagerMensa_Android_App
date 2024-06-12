@@ -114,6 +114,8 @@ class AccountActivity : AppCompatActivity() {
                 //Applico la selezione al MensaDatabase
                 val user_ = userDao.DeleteUser(users)
 
+                val allergie = userDao.DeleteAllergie()
+
             }
 
             //Caricamento animazione al click del Button

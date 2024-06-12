@@ -87,6 +87,7 @@ class AllergieActivity : AppCompatActivity() {
                     ).build()
                     val userDao = db.userDao()
 
+
                     val allergie = userDao.GetAllergie()
 
                     userDao.InsertAllergia(Allergia(binding.allergiaGlutine.text.toString()))
