@@ -127,9 +127,7 @@ class MainActivity : AppCompatActivity() {
             if (!alarmManager.canScheduleExactAlarms()) {
                 val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
                 requestScheduleExactAlarmPermission.launch(intent)
-            } else {
             }
-        } else {
         }
     }
 

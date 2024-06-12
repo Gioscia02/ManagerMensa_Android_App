@@ -197,8 +197,6 @@ class PrenotazioniActivity : AppCompatActivity() {
                 binding.textPrenotazioniOggi.text = result2
                 orarioPrenotazioneResult = result2
 
-
-
             }
         }
 
@@ -223,13 +221,14 @@ class PrenotazioniActivity : AppCompatActivity() {
                 if (true) {
                     if (selectedLocalTime in LocalTime.of(12, 0)..LocalTime.of(14, 30) && isPranzo) {
                         selectedTimePranzo = selectedLocalTime
-                        binding.selectedTimeTextViewPranzo.text =
-                            "Orario selezionato per il pranzo: $selectedTimePranzo"
+                        binding.selectedTimeTextViewPranzo.text = "Orario selezionato per il pranzo: $selectedTimePranzo"
+
                     } else if (isPranzo && !(selectedLocalTime in LocalTime.of(12, 0)..LocalTime.of(14, 30))) {
                         showToast("Seleziona un orario compreso tra le 12 e le 14:30")
                     } else if (selectedLocalTime in LocalTime.of(19, 0)..LocalTime.of(21, 30) && !isPranzo) {
                         selectedTimeCena = selectedLocalTime
                         binding.selectedTimeTextViewCena.text = "Orario selezionato per la cena: $selectedTimeCena"
+
                     } else if (!(selectedLocalTime in LocalTime.of(19, 0)..LocalTime.of(21, 30)) && !isPranzo) {
                         showToast("Seleziona un orario compreso tra le 19 e le 21:30")
                     }
@@ -269,6 +268,7 @@ class PrenotazioniActivity : AppCompatActivity() {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         Log.d("ORARIOOOOOOOOO", orarioPrenotazioneResult.toString())
         val calendar = Calendar.getInstance().apply {
+
 
             //Promemoria per prima dell'ora di pranzo
             if(ora <15) {

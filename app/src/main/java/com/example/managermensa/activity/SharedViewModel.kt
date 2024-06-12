@@ -1,7 +1,6 @@
 package com.example.managermensa.activity
 
 import SecurePreferencesManager
-import UserDatabaseManager
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -16,7 +15,6 @@ import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.managermensa.activity.localdatabase.AppDatabase
-import com.example.managermensa.activity.localdatabase.LocalViewModel
 import com.example.managermensa.activity.localdatabase.Prezzi
 import com.example.managermensa.activity.localdatabase.User
 import com.example.managermensa.activity.retrofit.Client
