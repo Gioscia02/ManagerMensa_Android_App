@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("kotlin-kapt")
     id ("kotlin-parcelize")
-
+    id("com.google.gms.google-services") version "4.4.2" apply false
 }
 
 android {
@@ -81,6 +81,16 @@ dependencies {
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1")
     implementation ("androidx.room:room-runtime:2.3.0")
     kapt ("androidx.room:room-compiler:2.3.0")
+
+    // Import the Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
+
+
+    // TODO: Add the dependencies for Firebase products you want to use
+    // When using the BoM, don't specify versions in Firebase dependencies
+    implementation("com.google.firebase:firebase-analytics")
+
+
 
 
 }

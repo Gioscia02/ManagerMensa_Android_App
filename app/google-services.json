@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1053911765150",
+    "project_id": "managermensa",
+    "storage_bucket": "managermensa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1053911765150:android:c8aed30c55bd4d58fdeb8f",
+        "android_client_info": {
+          "package_name": "com.example.managermensa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVedMqXWTWH7YY0XV-vZ43v0jt1k0XGOc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
