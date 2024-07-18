@@ -19,6 +19,7 @@ It allows the clients of a cafeteria to use all the following functions:
 7. Manage the cafeteria's wallet
 8. See the expense history
 9. Modify the account's credentials
+10. Schedule a notification to remember a reservetion made
 
 # How it works
 1. The Retrofit calls to link with the server 
